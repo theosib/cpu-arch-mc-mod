@@ -13,10 +13,15 @@ public class DataObjectType {
     private HashMap<String, Integer> requiredTags = new HashMap<>();
     private String name;
 
+    public static DataObjectType create(String typeName){
+        if (types.containsKey(typeName)) return types.get(typeName);
+        return new DataObjectType(typeName);
+    }
+
     /***
      * @param typeName name of the type that should be created
      * ***/
-    public DataObjectType(String typeName){
+    private DataObjectType(String typeName){
         requiredTags.put("type", NbtType.STRING);
         types.put(typeName,this);
         this.name = typeName;

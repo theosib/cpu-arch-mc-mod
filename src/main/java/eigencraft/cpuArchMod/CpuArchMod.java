@@ -5,10 +5,7 @@ import eigencraft.cpuArchMod.backend.DataObjectType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.util.NbtType;
 
-import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.Tag;
+
 
 
 public class CpuArchMod implements ModInitializer {
@@ -21,7 +18,7 @@ public class CpuArchMod implements ModInitializer {
 		System.out.println("Hello!");
 
 		//Create ne dataObjectType
-		DataObjectType testType = new DataObjectType("test");
+		DataObjectType testType = DataObjectType.create("test");
 		//Add tag
 		testType.addTag("testInt", NbtType.INT);
 
