@@ -4,11 +4,7 @@ import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.TagReader;
-import net.minecraft.text.Text;
 
-import java.io.DataOutput;
-import java.io.IOException;
 import java.util.*;
 /***
  * A DataObject
@@ -18,13 +14,14 @@ public class DataObject {
 
     private CompoundTag dataStorage;
 
-
+    /***
+     * @param type The DataObjectType used as template.
+     * ***/
     public DataObject(DataObjectType type) {
         dataStorage = new CompoundTag();
 
         //Initialise with all required tags, setting them to defaults, so we don't need to check if a type is valid
-        for (Iterator<Map.Entry<String, Integer>> it = type.getRequiredTags().entrySet().iterator();it.hasNext();){
-            Map.Entry<String,Integer> entry = it.next();
+        for (Map.Entry<String, Integer> entry : type.getRequiredTags().entrySet()){
             switch (entry.getValue()){
                 case NbtType.BYTE:{
                     dataStorage.putByte(entry.getKey(),(byte)0);
@@ -32,10 +29,6 @@ public class DataObject {
                 }
                 case NbtType.BYTE_ARRAY:{
                     dataStorage.putByteArray(entry.getKey(), new byte[]{});
-                    break;
-                }
-                case NbtType.COMPOUND:{
-                    dataStorage.put(entry.getKey(),new CompoundTag());
                     break;
                 }
                 case NbtType.DOUBLE:{
@@ -70,6 +63,9 @@ public class DataObject {
                     dataStorage.putString(entry.getKey(), "");
                     break;
                 }
+                default:{
+                    throw new IllegalArgumentException("Invalid datatype");
+                }
             }
         }
         //Set type name
@@ -86,59 +82,59 @@ public class DataObject {
 
 
     //Interfaces for tags
-    public Tag put(String key, Tag tag) {
-        return dataStorage.put(key, tag);
+    public void putTag(String key, Tag tag) {
+        dataStorage.put(key, tag);
     }
 
-    public void putByte(String key, byte value) {
+    public void setByte(String key, byte value) {
         dataStorage.putByte(key, value);
     }
 
-    public void putShort(String key, short value) {
+    public void setShort(String key, short value) {
         dataStorage.putShort(key, value);
     }
 
-    public void putInt(String key, int value) {
+    public void setInt(String key, int value) {
         dataStorage.putInt(key, value);
     }
 
-    public void putLong(String key, long value) {
+    public void setLong(String key, long value) {
         dataStorage.putLong(key, value);
     }
 
-    public void putFloat(String key, float value) {
+    public void setFloat(String key, float value) {
         dataStorage.putFloat(key, value);
     }
 
-    public void putDouble(String key, double value) {
+    public void setDouble(String key, double value) {
         dataStorage.putDouble(key, value);
     }
 
-    public void putString(String key, String value) {
+    public void setString(String key, String value) {
         dataStorage.putString(key, value);
     }
 
-    public void putByteArray(String key, byte[] value) {
+    public void setByteArray(String key, byte[] value) {
         dataStorage.putByteArray(key, value);
     }
 
-    public void putIntArray(String key, int[] value) {
+    public void setIntArray(String key, int[] value) {
         dataStorage.putIntArray(key, value);
     }
 
-    public void putIntArray(String key, List<Integer> value) {
+    public void setIntArray(String key, List<Integer> value) {
         dataStorage.putIntArray(key, value);
     }
 
-    public void putLongArray(String key, long[] value) {
+    public void setLongArray(String key, long[] value) {
         dataStorage.putLongArray(key, value);
     }
 
-    public void putLongArray(String key, List<Long> value) {
+    public void setLongArray(String key, List<Long> value) {
         dataStorage.putLongArray(key, value);
     }
 
-    public Tag get(String key) {
+    public Tag getTag(String key) {
         return dataStorage.get(key);
     }
 
@@ -189,14 +185,4 @@ public class DataObject {
     public ListTag getList(String key, int type) {
         return dataStorage.getList(key, type);
     }
-
-    public void setTag(String name, Tag tag){
-        dataStorage.put(name,tag);
-    }
-
-    public Tag getTag(String name){
-        return dataStorage.get(name);
-    }
-
-
 }

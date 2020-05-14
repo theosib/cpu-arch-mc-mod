@@ -24,10 +24,12 @@ public class CpuArchMod implements ModInitializer {
 
 		//Create dataObject of testType from above
 		DataObject o = new DataObject(testType);
-		//always with a value initialized, for easy checks, you neve need to check if a tag exists on a dataObject if the dataObjectType declares this tagit
+		//Get type
+		System.out.println(o.getType());
+		//always with a value initialized, for easy checks, you never need to check if a tag exists on a dataObject if the dataObjectType declares this tag
 		System.out.println(o.getInt("testInt"));
 		//Set it to a value
-		o.putInt("testInt",99);
+		o.setInt("testInt",99);
 		//Get the value
 		System.out.println(o.getInt("testInt"));
 	}

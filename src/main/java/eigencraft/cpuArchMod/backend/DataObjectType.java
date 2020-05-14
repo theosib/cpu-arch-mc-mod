@@ -1,11 +1,8 @@
 package eigencraft.cpuArchMod.backend;
 
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.nbt.CompoundTag;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class DataObjectType {
     private static HashMap<String,DataObjectType> types = new HashMap<>();
@@ -13,14 +10,16 @@ public class DataObjectType {
     private HashMap<String, Integer> requiredTags = new HashMap<>();
     private String name;
 
+    /***
+     * @param typeName name of the type that should be created
+     * @return a new or the already existing DataObjectType
+     * ***/
     public static DataObjectType create(String typeName){
         if (types.containsKey(typeName)) return types.get(typeName);
         return new DataObjectType(typeName);
     }
 
-    /***
-     * @param typeName name of the type that should be created
-     * ***/
+
     private DataObjectType(String typeName){
         requiredTags.put("type", NbtType.STRING);
         types.put(typeName,this);
