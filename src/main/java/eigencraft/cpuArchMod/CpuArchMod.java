@@ -1,11 +1,15 @@
 package eigencraft.cpuArchMod;
 
+import eigencraft.cpuArchMod.backend.DataObject;
+import eigencraft.cpuArchMod.backend.DataObjectType;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.block.FabricBlockSettings;
-import net.minecraft.block.Block;
-import net.minecraft.block.Material;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.fabricmc.fabric.api.util.NbtType;
+
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.Tag;
+
 
 public class CpuArchMod implements ModInitializer {
 
@@ -15,5 +19,19 @@ public class CpuArchMod implements ModInitializer {
 	public void onInitialize() {
 		//Todo
 		System.out.println("Hello!");
+
+		//Create ne dataObjectType
+		DataObjectType testType = new DataObjectType("test");
+		//Add tag
+		testType.addTag("testInt", NbtType.INT);
+
+		//Create dataObject of testType from above
+		DataObject o = new DataObject(testType);
+		//always with a value initialized, for easy checks, you neve need to check if a tag exists on a dataObject if the dataObjectType declares this tagit
+		System.out.println(o.getInt("testInt"));
+		//Set it to a value
+		o.putInt("testInt",99);
+		//Get the value
+		System.out.println(o.getInt("testInt"));
 	}
 }
