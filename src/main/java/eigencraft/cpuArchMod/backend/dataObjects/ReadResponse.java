@@ -2,10 +2,10 @@ package eigencraft.cpuArchMod.backend.dataObjects;
 
 import eigencraft.cpuArchMod.backend.AbstractDataObject;
 
-public class ReadResponseDataObject extends AbstractDataObject {
+public class ReadResponse extends AbstractDataObject {
     byte[] data;
 
-    public ReadResponseDataObject(byte[] data) {
+    public ReadResponse(byte[] data) {
         this.data = data;
     }
 
