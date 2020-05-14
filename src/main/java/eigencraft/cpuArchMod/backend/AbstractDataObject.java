@@ -1,9 +1,6 @@
 package eigencraft.cpuArchMod.backend;
 
-import com.google.gson.Gson;
-
 public abstract class AbstractDataObject {
-    private transient Gson gson = new Gson();
     public static enum DataObjectTypes{
         READ,
         WRITE,
@@ -16,8 +13,4 @@ public abstract class AbstractDataObject {
      * @return The type of data object.
      * ***/
     public abstract DataObjectTypes getType();
-
-    public String toJson(){
-        return gson.toJson(this);
-    }
 }
