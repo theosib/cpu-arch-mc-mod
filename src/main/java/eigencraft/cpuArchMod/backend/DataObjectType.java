@@ -48,7 +48,10 @@ public class DataObjectType {
         return requiredTags;
     }
 
-    public static DataObjectType getDataObjectTypeFromName(String name){
+    public static DataObjectType getDataObjectTypeFromName(String name) throws UnknownDataObjectTypeException {
+        if (!types.containsKey(name)) throw new UnknownDataObjectTypeException();
         return types.get(name);
     }
+
+    public static class UnknownDataObjectTypeException extends Exception{}
 }

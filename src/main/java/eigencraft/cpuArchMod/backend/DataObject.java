@@ -15,69 +15,92 @@ public class DataObject {
     private CompoundTag dataStorage;
 
     /***
-     * @param type The DataObjectType used as template.
+     * @param type The DataObjectType used as template. It will be initialised with defaults
      * ***/
     public DataObject(DataObjectType type) {
         dataStorage = new CompoundTag();
-
         //Initialise with all required tags, setting them to defaults, so we don't need to check if a type is valid
         for (Map.Entry<String, Integer> entry : type.getRequiredTags().entrySet()){
-            switch (entry.getValue()){
-                case NbtType.BYTE:{
-                    dataStorage.putByte(entry.getKey(),(byte)0);
-                    break;
-                }
-                case NbtType.BYTE_ARRAY:{
-                    dataStorage.putByteArray(entry.getKey(), new byte[]{});
-                    break;
-                }
-                case NbtType.DOUBLE:{
-                    dataStorage.putDouble(entry.getKey(), 0);
-                    break;
-                }
-                case NbtType.FLOAT:{
-                    dataStorage.putFloat(entry.getKey(), 0);
-                    break;
-                }
-                case NbtType.INT:{
-                    dataStorage.putInt(entry.getKey(), 0);
-                    break;
-                }
-                case NbtType.INT_ARRAY:{
-                    dataStorage.putIntArray(entry.getKey(), new int[]{});
-                    break;
-                }
-                case NbtType.LIST:{
-                    dataStorage.put(entry.getKey(),new ListTag());
-                    break;
-                }
-                case NbtType.LONG:{
-                    dataStorage.putLong(entry.getKey(), 0);
-                    break;
-                }
-                case NbtType.LONG_ARRAY:{
-                    dataStorage.putLongArray(entry.getKey(), new long[]{});
-                    break;
-                }
-                case NbtType.STRING:{
-                    dataStorage.putString(entry.getKey(), "");
-                    break;
-                }
-                default:{
-                    throw new IllegalArgumentException("Invalid datatype");
-                }
-            }
+            addDefaultToCompoundTag(dataStorage,entry.getKey(),entry.getValue());
         }
         //Set type name
         dataStorage.putString("type",type.getName());
+    }
+
+    /***
+     * @param src CompoundTag used as source. Will be validated and fixed, to be type-save.
+     * @throws DataObjectType.UnknownDataObjectTypeException
+     * ***/
+    public DataObject(CompoundTag src) throws DataObjectType.UnknownDataObjectTypeException {
+        dataStorage = fixNbtCompoundAsDataObject(src);
     }
 
     public String getType(){
         return dataStorage.getString("type");
     }
 
+    private static CompoundTag fixNbtCompoundAsDataObject(CompoundTag compoundTag) throws DataObjectType.UnknownDataObjectTypeException {
+        if (compoundTag==null) throw new DataObjectType.UnknownDataObjectTypeException();
+        if (!compoundTag.contains("type",NbtType.STRING)) throw new DataObjectType.UnknownDataObjectTypeException();
 
+        String typeName = compoundTag.getString("type");
+        DataObjectType type = DataObjectType.getDataObjectTypeFromName(typeName);
 
+        for (Map.Entry<String, Integer> entry : type.getRequiredTags().entrySet()){
+            if (!compoundTag.contains(entry.getKey(),entry.getValue())){
+                addDefaultToCompoundTag(compoundTag,entry.getKey(),entry.getValue());
+            }
+        }
+        return compoundTag;
+    }
+
+    private static void addDefaultToCompoundTag(CompoundTag tag,String name,int nbtType){
+        switch (nbtType){
+            case NbtType.BYTE:{
+                tag.putByte(name,(byte)0);
+                break;
+            }
+            case NbtType.BYTE_ARRAY:{
+                tag.putByteArray(name, new byte[]{});
+                break;
+            }
+            case NbtType.DOUBLE:{
+                tag.putDouble(name, 0);
+                break;
+            }
+            case NbtType.FLOAT:{
+                tag.putFloat(name, 0);
+                break;
+            }
+            case NbtType.INT:{
+                tag.putInt(name, 0);
+                break;
+            }
+            case NbtType.INT_ARRAY:{
+                tag.putIntArray(name, new int[]{});
+                break;
+            }
+            case NbtType.LIST:{
+                tag.put(name,new ListTag());
+                break;
+            }
+            case NbtType.LONG:{
+                tag.putLong(name, 0);
+                break;
+            }
+            case NbtType.LONG_ARRAY:{
+                tag.putLongArray(name, new long[]{});
+                break;
+            }
+            case NbtType.STRING:{
+                tag.putString(name, "");
+                break;
+            }
+            default:{
+                throw new IllegalArgumentException("Invalid datatype");
+            }
+        }
+    }
 
 
 
