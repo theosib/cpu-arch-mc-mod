@@ -2,10 +2,13 @@ package eigencraft.cpuArchMod.backend;
 
 import net.fabricmc.fabric.api.util.NbtType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class DataObjectType {
     private static HashMap<String,DataObjectType> types = new HashMap<>();
+    private static final int[] allowedTags = {NbtType.BYTE,NbtType.INT,NbtType.STRING,NbtType.BYTE_ARRAY,NbtType.INT_ARRAY};
     
     private HashMap<String, Integer> requiredTags = new HashMap<>();
     private String name;
@@ -31,7 +34,13 @@ public class DataObjectType {
      * @param type types defined in net.fabricmc.fabric.api.util.NbtType
      * ***/
     public void addTag(String name,int type){
-        requiredTags.put(name,type);
+        for (int i = 0; i < allowedTags.length; i++) {
+            if (allowedTags[i]==type){
+                requiredTags.put(name,type);
+                return;
+            }
+        }
+        throw new UnsupportedTagTypeProgrammerMistake();
     }
 
     /***
@@ -54,4 +63,5 @@ public class DataObjectType {
     }
 
     public static class UnknownDataObjectTypeException extends Exception{}
+    public static class UnsupportedTagTypeProgrammerMistake extends Error{}
 }

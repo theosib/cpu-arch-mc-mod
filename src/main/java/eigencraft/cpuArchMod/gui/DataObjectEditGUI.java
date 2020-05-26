@@ -2,11 +2,12 @@ package eigencraft.cpuArchMod.gui;
 
 import eigencraft.cpuArchMod.backend.DataObject;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
+import net.minecraft.command.DataCommandObject;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.NbtText;
 
 public class DataObjectEditGUI extends LightweightGuiDescription {
     public static DataObjectEditGUI fromExisting(DataObject dataObject){

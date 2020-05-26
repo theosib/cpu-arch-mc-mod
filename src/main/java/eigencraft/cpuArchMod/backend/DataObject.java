@@ -39,6 +39,8 @@ public class DataObject {
         return dataStorage.getString("type");
     }
 
+    public CompoundTag getCompoundTag(){return dataStorage;}
+
     private static CompoundTag fixNbtCompoundAsDataObject(CompoundTag compoundTag) throws DataObjectType.UnknownDataObjectTypeException {
         if (compoundTag==null) throw new DataObjectType.UnknownDataObjectTypeException();
         if (!compoundTag.contains("type",NbtType.STRING)) throw new DataObjectType.UnknownDataObjectTypeException();
@@ -64,32 +66,12 @@ public class DataObject {
                 tag.putByteArray(name, new byte[]{});
                 break;
             }
-            case NbtType.DOUBLE:{
-                tag.putDouble(name, 0);
-                break;
-            }
-            case NbtType.FLOAT:{
-                tag.putFloat(name, 0);
-                break;
-            }
             case NbtType.INT:{
                 tag.putInt(name, 0);
                 break;
             }
             case NbtType.INT_ARRAY:{
                 tag.putIntArray(name, new int[]{});
-                break;
-            }
-            case NbtType.LIST:{
-                tag.put(name,new ListTag());
-                break;
-            }
-            case NbtType.LONG:{
-                tag.putLong(name, 0);
-                break;
-            }
-            case NbtType.LONG_ARRAY:{
-                tag.putLongArray(name, new long[]{});
                 break;
             }
             case NbtType.STRING:{
@@ -105,32 +87,13 @@ public class DataObject {
 
 
     //Interfaces for tags
-    public void putTag(String key, Tag tag) {
-        dataStorage.put(key, tag);
-    }
 
     public void setByte(String key, byte value) {
         dataStorage.putByte(key, value);
     }
 
-    public void setShort(String key, short value) {
-        dataStorage.putShort(key, value);
-    }
-
     public void setInt(String key, int value) {
         dataStorage.putInt(key, value);
-    }
-
-    public void setLong(String key, long value) {
-        dataStorage.putLong(key, value);
-    }
-
-    public void setFloat(String key, float value) {
-        dataStorage.putFloat(key, value);
-    }
-
-    public void setDouble(String key, double value) {
-        dataStorage.putDouble(key, value);
     }
 
     public void setString(String key, String value) {
@@ -149,40 +112,12 @@ public class DataObject {
         dataStorage.putIntArray(key, value);
     }
 
-    public void setLongArray(String key, long[] value) {
-        dataStorage.putLongArray(key, value);
-    }
-
-    public void setLongArray(String key, List<Long> value) {
-        dataStorage.putLongArray(key, value);
-    }
-
-    public Tag getTag(String key) {
-        return dataStorage.get(key);
-    }
-
     public byte getByte(String key) {
         return dataStorage.getByte(key);
     }
 
-    public short getShort(String key) {
-        return dataStorage.getShort(key);
-    }
-
     public int getInt(String key) {
         return dataStorage.getInt(key);
-    }
-
-    public long getLong(String key) {
-        return dataStorage.getLong(key);
-    }
-
-    public float getFloat(String key) {
-        return dataStorage.getFloat(key);
-    }
-
-    public double getDouble(String key) {
-        return dataStorage.getDouble(key);
     }
 
     public String getString(String key) {
@@ -195,17 +130,5 @@ public class DataObject {
 
     public int[] getIntArray(String key) {
         return dataStorage.getIntArray(key);
-    }
-
-    public long[] getLongArray(String key) {
-        return dataStorage.getLongArray(key);
-    }
-
-    public CompoundTag getCompound(String key) {
-        return dataStorage.getCompound(key);
-    }
-
-    public ListTag getList(String key, int type) {
-        return dataStorage.getList(key, type);
     }
 }
