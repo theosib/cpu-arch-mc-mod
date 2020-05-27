@@ -6,22 +6,33 @@ import eigencraft.cpuArchMod.backend.DataObjectType;
 import net.fabricmc.fabric.api.util.NbtType;
 
 import java.lang.reflect.Type;
-import java.util.Iterator;
 import java.util.Map;
 
 public class GsonDataObjectDeserializer implements JsonDeserializer<DataObject> {
-    public static class JsonStructureException extends Exception{}
+    public static class InvalidDataObjectJsonStructureError extends Error{}
     @Override
     public DataObject deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        String typeName = json.getAsJsonObject().get("type").getAsString();
-        JsonObject rootObject = json.getAsJsonObject();
         DataObject dataObject;
         try {
+            //Check type name. if type not available, return with error
+            String typeName;
+            try {
+                typeName = json.getAsJsonObject().get("type").getAsString();
+            } catch (NullPointerException e){
+                throw new InvalidDataObjectJsonStructureError();
+            }
+            //get json root
+            JsonObject rootObject = json.getAsJsonObject();
+            //get the dataObjectType
             DataObjectType dataObjectType = DataObjectType.getDataObjectTypeFromName(typeName);
+            //Create Template
             dataObject = new DataObject(dataObjectType);
+            //Iterate over all required tags
             for (Map.Entry<String, Integer> entry:dataObjectType.getRequiredTags().entrySet()) {
+                //Get value from json, if absent ignore it.
                 JsonElement value = rootObject.get(entry.getKey());
                 if (value!=null){
+                    //Switch for different types
                     switch (entry.getValue()) {
                         case NbtType.INT: {
                             dataObject.setInt(entry.getKey(), value.getAsInt());
@@ -32,11 +43,11 @@ public class GsonDataObjectDeserializer implements JsonDeserializer<DataObject> 
                             break;
                         }
                         case NbtType.STRING: {
-                            System.out.println(value);
                             dataObject.setString(entry.getKey(), value.getAsString());
                             break;
                         }
                         case NbtType.BYTE_ARRAY: {
+                            //Convert JsonArray to bytes[]
                             byte[] data = new byte[value.getAsJsonArray().size()];
                             int i = 0;
                             for (JsonElement element : value.getAsJsonArray()) {
@@ -46,6 +57,7 @@ public class GsonDataObjectDeserializer implements JsonDeserializer<DataObject> 
                             break;
                         }
                         case NbtType.INT_ARRAY: {
+                            //Convert JsonArray to int[]
                             int[] data = new int[value.getAsJsonArray().size()];
                             int i = 0;
                             for (JsonElement element : value.getAsJsonArray()) {
@@ -54,13 +66,19 @@ public class GsonDataObjectDeserializer implements JsonDeserializer<DataObject> 
                             dataObject.setIntArray(entry.getKey(), data);
                             break;
                         }
+                        default:{
+                            //Shouldn't happen
+                            throw new InvalidDataObjectJsonStructureError();
+                        }
                     }
                 }
             }
 
         } catch (DataObjectType.UnknownDataObjectTypeException e) {
-            throw new JsonSyntaxException("Invalid datatype!");
+            //Unknown dataObjectType, return with error
+            throw new InvalidDataObjectJsonStructureError();
         }
+        //Finally return the dataObject
         return dataObject;
     }
 }

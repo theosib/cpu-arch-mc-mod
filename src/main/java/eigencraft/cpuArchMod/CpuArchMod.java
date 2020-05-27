@@ -52,11 +52,7 @@ public class CpuArchMod implements ModInitializer {
 		});
 
 		DataObjectType dataObjectType = DataObjectType.create("test");
-		dataObjectType.addTag("byte",NbtType.BYTE);
 		dataObjectType.addTag("int",NbtType.INT);
 		dataObjectType.addTag("string",NbtType.STRING);
-		dataObjectType.addTag("ia",NbtType.INT_ARRAY);
-		dataObjectType.addTag("ba",NbtType.BYTE_ARRAY);
-		
 	}
 }
