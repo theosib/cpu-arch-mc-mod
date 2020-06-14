@@ -15,7 +15,7 @@ public class WBigTextWidget extends WWidget {
     private final static int SIDE_PADDING = 5;
     private static final int BORDER_WIDTH = 3;
     private final static int CURSOR_WIDTH = 2;
-    private final static int CURSOR_SPACE_SIDE = 2;
+    private final static int CURSOR_SPACE_SIDE = 1;
     private final static int CURSOR_GAP_SIZE = CURSOR_SPACE_SIDE+CURSOR_WIDTH+CURSOR_SPACE_SIDE;
 
     StringBuilder text = new StringBuilder();
@@ -48,12 +48,14 @@ public class WBigTextWidget extends WWidget {
 
         int yLevel = y+5+ BORDER_WIDTH -MinecraftClient.getInstance().textRenderer.fontHeight;
 
-        List<String> untilCursor = MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(text.substring(0, index),getWidth()-2*BORDER_WIDTH-2*SIDE_PADDING);
+        int usableSpace = getWidth()-2*BORDER_WIDTH-2*SIDE_PADDING;
+
+        List<String> untilCursor = MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(text.substring(0, index),usableSpace);
         int toCursorLineWidth = ((untilCursor.size()>0)?MinecraftClient.getInstance().textRenderer.getStringWidth(untilCursor.get(untilCursor.size()-1)):0);
-        int widthFromCursorToLineEnd = getWidth()-(2* BORDER_WIDTH)-toCursorLineWidth-CURSOR_GAP_SIZE-(2*SIDE_PADDING);
+        int widthFromCursorToLineEnd = usableSpace-toCursorLineWidth-CURSOR_GAP_SIZE;
         int charCountAfterCursor = MinecraftClient.getInstance().textRenderer.getCharacterCountForWidth(text.substring(index),widthFromCursorToLineEnd);
         String afterCursorString = text.substring(index,index+charCountAfterCursor);
-        List<String> nextLineFromCursor = MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(text.substring(index+charCountAfterCursor),getWidth()-2* BORDER_WIDTH-2*SIDE_PADDING);
+        List<String> nextLineFromCursor = MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(text.substring(index+charCountAfterCursor),usableSpace);
 
         for(String line:untilCursor){
             yLevel += MinecraftClient.getInstance().textRenderer.fontHeight;
