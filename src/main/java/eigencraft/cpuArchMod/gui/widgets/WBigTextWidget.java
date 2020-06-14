@@ -6,14 +6,19 @@ import io.github.cottonmc.cotton.gui.widget.data.Color;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWKeyCallback;
+
+import java.util.List;
 
 public class WBigTextWidget extends WWidget {
-    public static final int bg_color = new Color.RGB(255,20,20,20).toRgb();
-    public static final int text_color = new Color.RGB(255,255,255,255).toRgb();
-    public static final int border_width = 3;
-    String text = "lösfgjhsöldg jsldkghsldkfghslödhg fslödhgfs lködjfsldöjkfslködjfslö djkgsld ökghsldökhjfgsd lökhgf sdlköfhgsö dlhfg sldköhg fsdlöjkhgf";
+    private static final int BG_COLOR = new Color.RGB(255,20,20,20).toRgb();
+    private static final int TEXT_COLOR = new Color.RGB(255,255,255,255).toRgb();
+    private final static int SIDE_PADDING = 5;
+    private static final int BORDER_WIDTH = 3;
+    private final static int CURSOR_WIDTH = 2;
+    private final static int CURSOR_SPACE_SIDE = 2;
+    private final static int CURSOR_GAP_SIZE = CURSOR_SPACE_SIDE+CURSOR_WIDTH+CURSOR_SPACE_SIDE;
+
+    StringBuilder text = new StringBuilder();
 
     int index = 0;
 
@@ -35,26 +40,53 @@ public class WBigTextWidget extends WWidget {
     @Override
     public void paintBackground(int x, int y, int mouseX, int mouseY) {
         if (this.isFocused()){
-            ScreenDrawing.coloredRect(x, y, width, height, text_color);
-            ScreenDrawing.coloredRect(x+border_width, y+border_width, width-2*border_width, height-2*border_width, bg_color);
+            ScreenDrawing.coloredRect(x, y, width, height, TEXT_COLOR);
+            ScreenDrawing.coloredRect(x+ BORDER_WIDTH, y+ BORDER_WIDTH, width-2* BORDER_WIDTH, height-2* BORDER_WIDTH, BG_COLOR);
         } else {
-            ScreenDrawing.coloredRect(x, y, width, height, bg_color);
+            ScreenDrawing.coloredRect(x, y, width, height, BG_COLOR);
         }
 
-        int yLevel = y+5+border_width;
-        for (String line:MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(text.substring(0, index) + "|" + text.substring(index),getWidth()-10)) {
-            ScreenDrawing.drawString(line,x+5+border_width,yLevel,text_color);
+        int yLevel = y+5+ BORDER_WIDTH -MinecraftClient.getInstance().textRenderer.fontHeight;
+
+        List<String> untilCursor = MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(text.substring(0, index),getWidth()-2*BORDER_WIDTH-2*SIDE_PADDING);
+        int toCursorLineWidth = ((untilCursor.size()>0)?MinecraftClient.getInstance().textRenderer.getStringWidth(untilCursor.get(untilCursor.size()-1)):0);
+        int widthFromCursorToLineEnd = getWidth()-(2* BORDER_WIDTH)-toCursorLineWidth-CURSOR_GAP_SIZE-(2*SIDE_PADDING);
+        int charCountAfterCursor = MinecraftClient.getInstance().textRenderer.getCharacterCountForWidth(text.substring(index),widthFromCursorToLineEnd);
+        String afterCursorString = text.substring(index,index+charCountAfterCursor);
+        List<String> nextLineFromCursor = MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(text.substring(index+charCountAfterCursor),getWidth()-2* BORDER_WIDTH-2*SIDE_PADDING);
+
+        for(String line:untilCursor){
             yLevel += MinecraftClient.getInstance().textRenderer.fontHeight;
+            ScreenDrawing.drawString(line,x+BORDER_WIDTH+SIDE_PADDING,yLevel, TEXT_COLOR);
         }
+        ScreenDrawing.coloredRect(x+BORDER_WIDTH+toCursorLineWidth+CURSOR_SPACE_SIDE+SIDE_PADDING,yLevel,CURSOR_WIDTH,MinecraftClient.getInstance().textRenderer.fontHeight-2,TEXT_COLOR);
+
+        ScreenDrawing.drawString(afterCursorString,x+BORDER_WIDTH +toCursorLineWidth+ CURSOR_GAP_SIZE+SIDE_PADDING,yLevel, TEXT_COLOR);
+
+        for(String line:nextLineFromCursor){
+            yLevel += MinecraftClient.getInstance().textRenderer.fontHeight;
+            ScreenDrawing.drawString(line,x+ BORDER_WIDTH+SIDE_PADDING,yLevel, TEXT_COLOR);
+        }
+
     }
 
     @Override
     public void onKeyPressed(int ch, int key, int modifiers) {
         System.out.println(key);
+        System.out.print(text.length());
+        System.out.print(" ");
+        System.out.print(index);
         if (key== 123){
             index = (--index>=0)?index:0;
         } else if (key== 124){
             index = (++index<text.length())?index:text.length();
+        } else if (key==51){
+            if (text.length()>0){
+                text.deleteCharAt((--index >= 0) ? index : 0);
+                if (index < 0){
+                    index = 0;
+                }
+            }
         }
     }
 
@@ -66,12 +98,19 @@ public class WBigTextWidget extends WWidget {
     @Override
     public void onFocusGained() {
         super.onFocusGained();
-        System.out.println("focus");
     }
 
     @Override
     public void onCharTyped(char ch) {
-        text = text.substring(0, index) + ch + text.substring(index);
+        text.insert(index,ch);
         index++;
+    }
+
+    public void setText(String newText) {
+        text = new StringBuilder(newText);
+    }
+
+    public String getText() {
+        return text.toString();
     }
 }

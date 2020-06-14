@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import eigencraft.cpuArchMod.CpuArchMod;
 import eigencraft.cpuArchMod.backend.DataObject;
+import eigencraft.cpuArchMod.gui.widgets.WBigTextWidget;
 import eigencraft.cpuArchMod.util.GsonDataObjectDeserializer;
 import eigencraft.cpuArchMod.util.GsonDataObjectSerializer;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
@@ -43,10 +44,9 @@ public class DataObjectEditGUI extends LightweightGuiDescription {
         root.setSize(198, 180);
 
         //Text field. Because it doesn't support multiline, there is a replacment in work, but not ready. see WBigTextWidget
-        WTextField textField = new WTextField();
-        root.add(textField,0,3,10,1);
-        //Can't set infinite max length, set it high
-        textField.setMaxLength(1000);
+        WBigTextWidget textField = new WBigTextWidget();
+        root.add(textField,0,3,10,10);
+
 
         //Add label with the type
         WLabel label = new WLabel(new LiteralText("new dataObject"), 0xFFFFFF);
@@ -58,8 +58,6 @@ public class DataObjectEditGUI extends LightweightGuiDescription {
             label.setText(new LiteralText(dataObject.getType()));
             //Serialise to String
             String jsonDataObject = gson.toJson(dataObject);
-            //Can't set infinite max length, set it high
-            textField.setMaxLength(jsonDataObject.length()+1000);
             //Set text
             textField.setText(jsonDataObject);
         }

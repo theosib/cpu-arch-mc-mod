@@ -1,12 +1,8 @@
 package eigencraft.cpuArchMod;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import eigencraft.cpuArchMod.backend.DataObject;
 import eigencraft.cpuArchMod.backend.DataObjectType;
 import eigencraft.cpuArchMod.items.DebugDataObjectItem;
-import eigencraft.cpuArchMod.util.GsonDataObjectDeserializer;
-import eigencraft.cpuArchMod.util.GsonDataObjectSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -46,11 +42,14 @@ public class CpuArchMod implements ModInitializer {
 			packetContext.getTaskQueue().execute(() -> {
 				// Execute on the main thread
 				ItemStack mainHandStack = packetContext.getPlayer().inventory.getMainHandStack();
-				//TODO validate item type
-				mainHandStack.putSubTag("dataObject",dataObject.getCompoundTag());
+				if (mainHandStack.getItem() instanceof DebugDataObjectItem){
+					//TODO validate item type
+					mainHandStack.putSubTag("dataObject", dataObject.getCompoundTag());
+				}
 			});
 		});
 
+		//Test dataType
 		DataObjectType dataObjectType = DataObjectType.create("test");
 		dataObjectType.addTag("int",NbtType.INT);
 		dataObjectType.addTag("string",NbtType.STRING);
