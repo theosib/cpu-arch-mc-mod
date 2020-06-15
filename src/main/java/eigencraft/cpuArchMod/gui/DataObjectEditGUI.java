@@ -17,6 +17,7 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
 public class DataObjectEditGUI extends LightweightGuiDescription {
@@ -41,16 +42,15 @@ public class DataObjectEditGUI extends LightweightGuiDescription {
         //Root panel
         WGridPanel root = new WGridPanel();
         setRootPanel(root);
-        root.setSize(198, 180);
+        root.setSize(180, 180);
 
-        //Text field. Because it doesn't support multiline, there is a replacment in work, but not ready. see WBigTextWidget
         WBigTextWidget textField = new WBigTextWidget();
-        root.add(textField,0,3,10,10);
+        root.add(textField,0,3,8,7);
 
 
         //Add label with the type
         WLabel label = new WLabel(new LiteralText("new dataObject"), 0xFFFFFF);
-        root.add(label, 0, 1, 4, 1);
+        root.add(label, 0, 0, 4, 1);
 
         //Fill with data
         if (dataObject!=null){
@@ -63,7 +63,7 @@ public class DataObjectEditGUI extends LightweightGuiDescription {
         }
 
         //Add button to save
-        WButton saveButton = new WButton(new TranslatableText(CpuArchMod.MODID+":gui.button.save_and_close"));
+        WButton saveButton = new WButton(new TranslatableText("item.cpu_arch_mod.gui_button_save"));
         //Runs when clicked
         saveButton.setOnClick(new Runnable() {
             @Override
@@ -83,11 +83,11 @@ public class DataObjectEditGUI extends LightweightGuiDescription {
 
                 } catch (JsonSyntaxException| GsonDataObjectDeserializer.InvalidDataObjectJsonStructureError e){
                     //Invalid json
-                    label.setText(new TranslatableText(CpuArchMod.MODID+":dataobject.gui.invalid_json"));
+                    label.setText(new TranslatableText("item.cpu_arch_mod.dataobject_gui_invalid_json"));
                 }
             }
         });
-        root.add(saveButton,6,1,4,1);
+        root.add(saveButton,0,1,4,1);
 
         root.validate(this);
     }

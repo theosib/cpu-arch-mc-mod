@@ -1,0 +1,6 @@
+{
+  "item.cpu_arch_mod.data_object_disk_item":"dataObject disk&debugger",
+  "itemGroup.cpu_arch_mod.mod_creative_item_group":"cpu architecture mod",
+  "item.cpu_arch_mod.gui_button_save":"Save changes",
+  "item.cpu_arch_mod.dataobject_gui_invalid_json": "Invalid dataObject json!"
+}

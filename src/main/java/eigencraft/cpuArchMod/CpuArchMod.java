@@ -28,7 +28,7 @@ public class CpuArchMod implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		//Todo
-		Registry.register(Registry.ITEM, new Identifier(MODID, "data_object_debug_item"), debugDataObjectItem);
+		Registry.register(Registry.ITEM, new Identifier(MODID, "data_object_disk_item"), debugDataObjectItem);
 
 		ServerSidePacketRegistry.INSTANCE.register(DATAOBJECT_GUI_SAVE_C2S_PACKET, (packetContext, attachedData) -> {
 			// Get the BlockPos we put earlier in the IO thread
