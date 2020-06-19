@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import eigencraft.cpuArchMod.CpuArchMod;
-import eigencraft.cpuArchMod.backend.DataObject;
+import eigencraft.cpuArchMod.backend.dataObject.DataObject;
 import eigencraft.cpuArchMod.gui.widgets.WBigTextWidget;
 import eigencraft.cpuArchMod.util.GsonDataObjectDeserializer;
 import eigencraft.cpuArchMod.util.GsonDataObjectSerializer;
@@ -12,12 +12,10 @@ import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
-import io.github.cottonmc.cotton.gui.widget.WTextField;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
 public class DataObjectEditGUI extends LightweightGuiDescription {

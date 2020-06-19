@@ -1,8 +1,8 @@
 package eigencraft.cpuArchMod.util;
 
 import com.google.gson.*;
-import eigencraft.cpuArchMod.backend.DataObject;
-import eigencraft.cpuArchMod.backend.DataObjectType;
+import eigencraft.cpuArchMod.backend.dataObject.DataObject;
+import eigencraft.cpuArchMod.backend.dataObject.DataObjectType;
 import net.fabricmc.fabric.api.util.NbtType;
 
 import java.lang.reflect.Type;

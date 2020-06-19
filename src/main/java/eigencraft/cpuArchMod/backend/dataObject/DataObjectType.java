@@ -1,10 +1,8 @@
-package eigencraft.cpuArchMod.backend;
+package eigencraft.cpuArchMod.backend.dataObject;
 
 import net.fabricmc.fabric.api.util.NbtType;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class DataObjectType {
     private static HashMap<String,DataObjectType> types = new HashMap<>();
