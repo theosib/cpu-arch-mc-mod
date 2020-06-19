@@ -2,6 +2,7 @@ package eigencraft.cpuArchMod.blocks;
 
 import eigencraft.cpuArchMod.CpuArchMod;
 import eigencraft.cpuArchMod.backend.simulation.SimulationIOManager;
+import eigencraft.cpuArchMod.backend.simulation.SimulationMasterProvider;
 import eigencraft.cpuArchMod.backend.simulation.SimulationWorld;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -23,7 +24,7 @@ public class DataPipeBlock extends Block {
     @Override
     public void onBlockRemoved(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
         if (!world.isClient){
-            CpuArchMod.simulationMaster.getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
+            ((SimulationMasterProvider)world).getSimulationMaster().getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
                 @Override
                 public void run(SimulationWorld simulationWorld) {
                     simulationWorld.removePipe(pos);
@@ -36,7 +37,7 @@ public class DataPipeBlock extends Block {
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
         if (!world.isClient){
-            CpuArchMod.simulationMaster.getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
+            ((SimulationMasterProvider)world).getSimulationMaster().getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
                 @Override
                 public void run(SimulationWorld simulationWorld) {
                     simulationWorld.addPipe(pos);

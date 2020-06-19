@@ -4,6 +4,7 @@ import eigencraft.cpuArchMod.CpuArchMod;
 import eigencraft.cpuArchMod.backend.dataObject.DataObject;
 import eigencraft.cpuArchMod.backend.dataObject.DataObjectType;
 import eigencraft.cpuArchMod.backend.simulation.SimulationIOManager;
+import eigencraft.cpuArchMod.backend.simulation.SimulationMasterProvider;
 import eigencraft.cpuArchMod.backend.simulation.SimulationNode;
 import eigencraft.cpuArchMod.backend.simulation.SimulationWorld;
 import eigencraft.cpuArchMod.items.DebugDataObjectItem;
@@ -34,7 +35,7 @@ public class NodeContainerBlock extends Block {
     @Override
     public void onBlockRemoved(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
         if (!world.isClient){
-            CpuArchMod.simulationMaster.getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
+            ((SimulationMasterProvider)world).getSimulationMaster().getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
                 @Override
                 public void run(SimulationWorld simulationWorld) {
                     simulationWorld.removeNode(pos);
@@ -47,7 +48,7 @@ public class NodeContainerBlock extends Block {
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
         if (!world.isClient){
-            CpuArchMod.simulationMaster.getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
+            ((SimulationMasterProvider)world).getSimulationMaster().getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
                 @Override
                 public void run(SimulationWorld simulationWorld) {
                     simulationWorld.addNode(constructor.apply(pos),pos);
@@ -68,7 +69,7 @@ public class NodeContainerBlock extends Block {
                         DataObject dataObject = new DataObject(dataObjectNbt);
                         if (!world.isClient){
                             //Submit to simulation thread
-                            CpuArchMod.simulationMaster.getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
+                            ((SimulationMasterProvider)world).getSimulationMaster().getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
                                 @Override
                                 public void run(SimulationWorld simulationWorld) {
                                     SimulationNode node = simulationWorld.getOrLoadChunk(new ChunkPos(pos)).getNodeAt(pos);

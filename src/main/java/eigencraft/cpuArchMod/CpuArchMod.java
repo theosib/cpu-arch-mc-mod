@@ -4,6 +4,7 @@ import eigencraft.cpuArchMod.backend.dataObject.DataObject;
 import eigencraft.cpuArchMod.backend.dataObject.DataObjectType;
 import eigencraft.cpuArchMod.backend.simulation.SimulationIOManager;
 import eigencraft.cpuArchMod.backend.simulation.SimulationMaster;
+import eigencraft.cpuArchMod.backend.simulation.SimulationMasterProvider;
 import eigencraft.cpuArchMod.backend.simulation.SimulationWorld;
 import eigencraft.cpuArchMod.blocks.DataPipeBlock;
 import eigencraft.cpuArchMod.blocks.NodeContainerBlock;
@@ -27,6 +28,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 
 import java.util.LinkedList;
 
@@ -40,8 +42,6 @@ public class CpuArchMod implements ModInitializer {
 
 	public static final Item DEBUG_DATA_OBJECT_ITEM = new DebugDataObjectItem();
 
-	public static SimulationMaster simulationMaster;
-
 	public static final Block DATA_PIPE_BLOCK = new DataPipeBlock(FabricBlockSettings.of(Material.METAL).breakByHand(true).hardness((float)Math.PI).build());
 
 	public static final Block IO_NODE = new NodeContainerBlock(FabricBlockSettings.of(Material.METAL).breakByHand(true).hardness((float)Math.PI).build(), IONode::new);
@@ -49,30 +49,17 @@ public class CpuArchMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		//When server launches, create new SimulationMaster
-		ServerStartCallback.EVENT.register(new ServerStartCallback() {
-			@Override
-			public void onStartServer(MinecraftServer minecraftServer) {
-				simulationMaster = new SimulationMaster();
-			}
-		});
-
-		//Shutdown simulationMaster on server shutdown
-		ServerStopCallback.EVENT.register(new ServerStopCallback() {
-			@Override
-			public void onStopServer(MinecraftServer minecraftServer) {
-				simulationMaster.requestShutdown();
-				simulationMaster = null;
-			}
-		});
 
 		ServerTickCallback.EVENT.register(new ServerTickCallback() {
 			@Override
 			public void tick(MinecraftServer minecraftServer) {
-				//Interface between simulation thread and game thread
-				LinkedList<SimulationIOManager.MinecraftServerRunnable> events = simulationMaster.getIOManager().getMainThreadQueue();
-				while (!events.isEmpty()){
-					events.remove().run(minecraftServer);
+				//Interface between simulation thread and game thread, executed for every dimension
+				for (World world:minecraftServer.getWorlds()){
+					SimulationMaster worldSimulationMaster = ((SimulationMasterProvider)world).getSimulationMaster();
+					LinkedList<SimulationIOManager.MinecraftServerRunnable> events = worldSimulationMaster.getIOManager().getMainThreadQueue();
+					while (!events.isEmpty()){
+						events.remove().run(minecraftServer);
+					}
 				}
 			}
 		});
