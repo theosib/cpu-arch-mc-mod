@@ -53,7 +53,7 @@ public class SimulationPipe{
     /***
      * Used to transfer dataObjects between pipes, as an normal user, you never will use this.
      * @param dataObject
-     * @param src
+     * @param src stop backTracing
      */
     private void interPipePublish(DataObject dataObject, SimulationPipe src) {
         if (!loopBlocker){
