@@ -8,16 +8,37 @@ import java.util.*;
 public class SimulationChunk {
     ChunkPos chunkPos;
 
-    public SimulationChunk(ChunkPos chunkPos, SimulationWorld master) {
+    private int northLoadLevel = 0;
+    private int southLoadLevel = 0;
+    private int eastLoadLevel = 0;
+    private int westLoadLevel = 0;
+
+    public SimulationChunk(ChunkPos chunkPos, SimulationWorld world) {
         this.chunkPos = chunkPos;
-        this.master = master;
+        this.world = world;
     }
 
-    SimulationWorld master;
-    private int dependentNeighbors = 0;
+    SimulationWorld world;
     private HashMap<Integer,SimulationNode> nodes = new HashMap<>();
     private HashMap<Integer, SimulationPipe> pipes = new HashMap<>();
-    private List<ChunkPos> requiredChunks = new ArrayList<>();
+
+    public String save(){
+        StringBuilder xmlString = new StringBuilder();
+        xmlString.append("<chunk>");
+        xmlString.append(String.format("<chunkLoading direction='%s' level='%d' />","north",northLoadLevel));
+        xmlString.append(String.format("<chunkLoading direction='%s' level='%d' />","south",southLoadLevel));
+        xmlString.append(String.format("<chunkLoading direction='%s' level='%d' />","east",eastLoadLevel));
+        xmlString.append(String.format("<chunkLoading direction='%s' level='%d' />","west",westLoadLevel));
+        for (SimulationNode node:nodes.values()) {
+            xmlString.append(String.format("<node x='%d' y='%d' z='%d' type='%s' />",node.position.getX(),node.position.getY(),node.position.getZ(),node.getClass().getSimpleName()));
+        }
+        for (SimulationPipe pipe:pipes.values()) {
+            xmlString.append(String.format("<pipe x='%d' y='%d' z='%d' />",pipe.position.getX(),pipe.position.getY(),pipe.position.getZ()));
+        }
+
+        xmlString.append("</chunk>");
+        return xmlString.toString();
+    }
 
     public void addNode(SimulationNode node, BlockPos pos){
         nodes.put(pos.hashCode(),node);
@@ -25,36 +46,52 @@ public class SimulationChunk {
         //Load needed neighbors
         checkLoadNeighbors(pos);
 
-        master.getOrLoadChunk(new ChunkPos(pos.north())).connectPipeFromPosToNode(node,pos.north());
-        master.getOrLoadChunk(new ChunkPos(pos.south())).connectPipeFromPosToNode(node,pos.south());
-        master.getOrLoadChunk(new ChunkPos(pos.east())).connectPipeFromPosToNode(node,pos.east());
-        master.getOrLoadChunk(new ChunkPos(pos.west())).connectPipeFromPosToNode(node,pos.west());
-        master.getOrLoadChunk(new ChunkPos(pos.up())).connectPipeFromPosToNode(node,pos.up());
-        master.getOrLoadChunk(new ChunkPos(pos.down())).connectPipeFromPosToNode(node,pos.down());
+        world.getOrLoadChunk(new ChunkPos(pos.north())).connectPipeFromPosToNode(node,pos.north());
+        world.getOrLoadChunk(new ChunkPos(pos.south())).connectPipeFromPosToNode(node,pos.south());
+        world.getOrLoadChunk(new ChunkPos(pos.east())).connectPipeFromPosToNode(node,pos.east());
+        world.getOrLoadChunk(new ChunkPos(pos.west())).connectPipeFromPosToNode(node,pos.west());
+        world.getOrLoadChunk(new ChunkPos(pos.up())).connectPipeFromPosToNode(node,pos.up());
+        world.getOrLoadChunk(new ChunkPos(pos.down())).connectPipeFromPosToNode(node,pos.down());
+    }
+
+    public void removeNode(BlockPos pos) {
+        nodes.remove(pos.hashCode());
+        if (!chunkPos.equals(new ChunkPos(pos.north()))){
+            northLoadLevel--;
+        }
+        if (!chunkPos.equals(new ChunkPos(pos.south()))){
+            southLoadLevel--;
+        }
+        if (!chunkPos.equals(new ChunkPos(pos.east()))){
+            eastLoadLevel--;
+        }
+        if (!chunkPos.equals(new ChunkPos(pos.west()))){
+            westLoadLevel--;
+        }
     }
 
     public void addPipe(BlockPos blockPos){
-        SimulationPipe pipe = new SimulationPipe();
+        SimulationPipe pipe = new SimulationPipe(blockPos);
         pipes.put(blockPos.hashCode(),pipe);
 
         //Load needed neighbors
         checkLoadNeighbors(blockPos);
 
         //Add pipe-pipe connections
-        master.getOrLoadChunk(new ChunkPos(blockPos.north())).connectPipePipe(pipe,blockPos.north());
-        master.getOrLoadChunk(new ChunkPos(blockPos.south())).connectPipePipe(pipe,blockPos.south());
-        master.getOrLoadChunk(new ChunkPos(blockPos.east())).connectPipePipe(pipe,blockPos.east());
-        master.getOrLoadChunk(new ChunkPos(blockPos.west())).connectPipePipe(pipe,blockPos.west());
-        master.getOrLoadChunk(new ChunkPos(blockPos.up())).connectPipePipe(pipe,blockPos.up());
-        master.getOrLoadChunk(new ChunkPos(blockPos.down())).connectPipePipe(pipe,blockPos.down());
+        world.getOrLoadChunk(new ChunkPos(blockPos.north())).connectPipePipe(pipe,blockPos.north());
+        world.getOrLoadChunk(new ChunkPos(blockPos.south())).connectPipePipe(pipe,blockPos.south());
+        world.getOrLoadChunk(new ChunkPos(blockPos.east())).connectPipePipe(pipe,blockPos.east());
+        world.getOrLoadChunk(new ChunkPos(blockPos.west())).connectPipePipe(pipe,blockPos.west());
+        world.getOrLoadChunk(new ChunkPos(blockPos.up())).connectPipePipe(pipe,blockPos.up());
+        world.getOrLoadChunk(new ChunkPos(blockPos.down())).connectPipePipe(pipe,blockPos.down());
 
         //Add pipe-node connections
-        master.getOrLoadChunk(new ChunkPos(blockPos.north())).connectPipeToNodeFromPos(pipe,blockPos.north());
-        master.getOrLoadChunk(new ChunkPos(blockPos.south())).connectPipeToNodeFromPos(pipe,blockPos.south());
-        master.getOrLoadChunk(new ChunkPos(blockPos.east())).connectPipeToNodeFromPos(pipe,blockPos.east());
-        master.getOrLoadChunk(new ChunkPos(blockPos.west())).connectPipeToNodeFromPos(pipe,blockPos.west());
-        master.getOrLoadChunk(new ChunkPos(blockPos.up())).connectPipeToNodeFromPos(pipe,blockPos.up());
-        master.getOrLoadChunk(new ChunkPos(blockPos.down())).connectPipeToNodeFromPos(pipe,blockPos.down());
+        world.getOrLoadChunk(new ChunkPos(blockPos.north())).connectPipeToNodeFromPos(pipe,blockPos.north());
+        world.getOrLoadChunk(new ChunkPos(blockPos.south())).connectPipeToNodeFromPos(pipe,blockPos.south());
+        world.getOrLoadChunk(new ChunkPos(blockPos.east())).connectPipeToNodeFromPos(pipe,blockPos.east());
+        world.getOrLoadChunk(new ChunkPos(blockPos.west())).connectPipeToNodeFromPos(pipe,blockPos.west());
+        world.getOrLoadChunk(new ChunkPos(blockPos.up())).connectPipeToNodeFromPos(pipe,blockPos.up());
+        world.getOrLoadChunk(new ChunkPos(blockPos.down())).connectPipeToNodeFromPos(pipe,blockPos.down());
     }
 
     public void removePipe(BlockPos pos){
@@ -67,48 +104,36 @@ public class SimulationChunk {
             this.removePipeConnections(toRemove);
 
             //Remove in neighbor chunks
-            master.getOrLoadChunk(new ChunkPos(pos.north(16))).removePipeConnections(toRemove);
-            master.getOrLoadChunk(new ChunkPos(pos.south(16))).removePipeConnections(toRemove);
-            master.getOrLoadChunk(new ChunkPos(pos.east(16))).removePipeConnections(toRemove);
-            master.getOrLoadChunk(new ChunkPos(pos.west(16))).removePipeConnections(toRemove);
+            if (!chunkPos.equals(new ChunkPos(pos.north()))){
+                ChunkPos toLoad = new ChunkPos(pos.north());
+                world.getOrLoadChunk(toLoad).removePipeConnections(toRemove);
+                northLoadLevel--;
+            }
+            if (!chunkPos.equals(new ChunkPos(pos.south()))){
+                ChunkPos toLoad = new ChunkPos(pos.south());
+                world.getOrLoadChunk(toLoad).removePipeConnections(toRemove);
+                southLoadLevel--;
+            }
+            if (!chunkPos.equals(new ChunkPos(pos.east()))){
+                ChunkPos toLoad = new ChunkPos(pos.east());
+                world.getOrLoadChunk(toLoad).removePipeConnections(toRemove);
+                eastLoadLevel--;
+            }
+            if (!chunkPos.equals(new ChunkPos(pos.west()))){
+                ChunkPos toLoad = new ChunkPos(pos.west());
+                world.getOrLoadChunk(toLoad).removePipeConnections(toRemove);
+                westLoadLevel--;
+            }
         }
     }
 
     private void removePipeConnections(SimulationPipe toRemove) {
         for (SimulationPipe pipe:pipes.values()){
-            pipe.remove(toRemove);
+            pipe.removeConnection(toRemove);
         }
         for (SimulationNode node:nodes.values()){
-            node.removePipeConnection(toRemove);
+            node.removePipe(toRemove);
         }
-    }
-
-    private void checkLoadNeighbors(BlockPos pos){
-        //Need to load neighbours?
-        if (!chunkPos.equals(new ChunkPos(pos.north()))){
-            ChunkPos toLoad = new ChunkPos(pos.north());
-            this.addDependentChunk(toLoad);
-            master.getOrLoadChunk(toLoad).addDependentChunk(this.chunkPos);
-        }
-        if (!chunkPos.equals(new ChunkPos(pos.south()))){
-            ChunkPos toLoad = new ChunkPos(pos.south());
-            this.addDependentChunk(toLoad);
-            master.getOrLoadChunk(toLoad).addDependentChunk(this.chunkPos);;
-        }
-        if (!chunkPos.equals(new ChunkPos(pos.east()))){
-            ChunkPos toLoad = new ChunkPos(pos.east());
-            this.addDependentChunk(toLoad);
-            master.getOrLoadChunk(toLoad).addDependentChunk(this.chunkPos);;
-        }
-        if (!chunkPos.equals(new ChunkPos(pos.west()))){
-            ChunkPos toLoad = new ChunkPos(pos.west());
-            this.addDependentChunk(toLoad);
-            master.getOrLoadChunk(toLoad).addDependentChunk(this.chunkPos);
-        }
-    }
-
-    public void addDependentChunk(ChunkPos pos){
-        requiredChunks.add(pos);
     }
 
     private void connectPipeFromPosToNode(SimulationNode node, BlockPos pipePos){
@@ -132,6 +157,29 @@ public class SimulationChunk {
         }
     }
 
+    private void checkLoadNeighbors(BlockPos pos){
+        //Need to load neighbours?
+        if (!chunkPos.equals(new ChunkPos(pos.north()))){
+            ChunkPos toLoad = new ChunkPos(pos.north());
+            world.getOrLoadChunk(toLoad);
+            northLoadLevel++;
+        }
+        if (!chunkPos.equals(new ChunkPos(pos.south()))){
+            ChunkPos toLoad = new ChunkPos(pos.south());
+            world.getOrLoadChunk(toLoad);
+            southLoadLevel++;
+        }
+        if (!chunkPos.equals(new ChunkPos(pos.east()))){
+            ChunkPos toLoad = new ChunkPos(pos.east());
+            world.getOrLoadChunk(toLoad);
+            eastLoadLevel++;
+        }
+        if (!chunkPos.equals(new ChunkPos(pos.west()))){
+            ChunkPos toLoad = new ChunkPos(pos.west());
+            world.getOrLoadChunk(toLoad);
+            westLoadLevel++;
+        }
+    }
 
     public void tickNodes(SimulationIOManager ioManager){
         for (SimulationNode node:nodes.values()){
@@ -152,7 +200,5 @@ public class SimulationChunk {
         return null;
     }
 
-    public void removeNode(BlockPos pos) {
-        nodes.remove(pos.hashCode());
-    }
+
 }

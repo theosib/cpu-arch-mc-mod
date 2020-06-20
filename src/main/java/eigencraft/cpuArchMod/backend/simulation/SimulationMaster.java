@@ -1,5 +1,7 @@
 package eigencraft.cpuArchMod.backend.simulation;
 
+import java.io.File;
+
 public class SimulationMaster implements Runnable{
     private SimulationWorld world;
     private Thread simulationExecutor;
@@ -7,7 +9,11 @@ public class SimulationMaster implements Runnable{
     private int tickCounter = 0;
 
     public SimulationMaster(){
-        world = new SimulationWorld(null);
+    }
+
+    public void launchSimulationWorld(File savePath){
+        savePath.mkdirs();
+        world = new SimulationWorld(savePath);
         simulationExecutor = new Thread(this);
 
         //Always last

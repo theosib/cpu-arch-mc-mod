@@ -3,16 +3,23 @@ package eigencraft.cpuArchMod.backend.simulation;
 import eigencraft.cpuArchMod.backend.dataObject.DataObject;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.function.Function;
 
-public abstract class SimulationNode {
-    private HashSet<SimulationPipe> connectedPipes = new HashSet<>();
+public abstract class SimulationNode{
+
+    private static HashMap<String, Function<BlockPos,SimulationNode>> nodeTypeRegistry = new HashMap<>();
+
+    HashSet<SimulationPipe> connectedPipes = new HashSet<>();
     protected BlockPos position;
 
     public SimulationNode(BlockPos position){
         this.position = position;
+    }
+
+    public static void register(Class type,Function<BlockPos,SimulationNode> constructor){
+        nodeTypeRegistry.put(type.getSimpleName(),constructor);
     }
 
     public abstract void process(DataObject inMessages,SimulationIOManager ioManager);
@@ -39,7 +46,7 @@ public abstract class SimulationNode {
         }
     }
 
-    public boolean removePipeConnection(SimulationPipe toRemove){
+    public boolean removePipe(SimulationPipe toRemove){
         return connectedPipes.remove(toRemove);
     }
 }

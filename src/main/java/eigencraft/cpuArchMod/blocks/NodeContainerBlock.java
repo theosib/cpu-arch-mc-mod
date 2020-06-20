@@ -1,6 +1,5 @@
 package eigencraft.cpuArchMod.blocks;
 
-import eigencraft.cpuArchMod.CpuArchMod;
 import eigencraft.cpuArchMod.backend.dataObject.DataObject;
 import eigencraft.cpuArchMod.backend.dataObject.DataObjectType;
 import eigencraft.cpuArchMod.backend.simulation.SimulationIOManager;
@@ -8,7 +7,6 @@ import eigencraft.cpuArchMod.backend.simulation.SimulationMasterProvider;
 import eigencraft.cpuArchMod.backend.simulation.SimulationNode;
 import eigencraft.cpuArchMod.backend.simulation.SimulationWorld;
 import eigencraft.cpuArchMod.items.DebugDataObjectItem;
-import eigencraft.cpuArchMod.simulationNode.IONode;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -59,7 +57,6 @@ public class NodeContainerBlock extends Block {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-
         if (hand.equals(Hand.MAIN_HAND)){
             ItemStack mainHandStack = player.inventory.getMainHandStack();
             if (mainHandStack.getItem() instanceof DebugDataObjectItem){

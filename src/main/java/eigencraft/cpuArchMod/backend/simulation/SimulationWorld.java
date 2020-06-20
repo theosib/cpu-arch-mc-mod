@@ -1,10 +1,11 @@
 package eigencraft.cpuArchMod.backend.simulation;
 
-import eigencraft.cpuArchMod.backend.dataObject.DataObject;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 
-import java.nio.file.Path;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -12,9 +13,9 @@ import java.util.Map;
 public class SimulationWorld {
     HashMap<ChunkPos,SimulationChunk> loadedChunks = new HashMap<>();
     SimulationIOManager ioManager;
-    Path simulationSaveDirectory;
+    File simulationSaveDirectory;
 
-    public SimulationWorld(Path simulationSaveDirectory) {
+    public SimulationWorld(File simulationSaveDirectory) {
         this.simulationSaveDirectory = simulationSaveDirectory;
         this.ioManager = new SimulationIOManager();
     }
@@ -46,18 +47,42 @@ public class SimulationWorld {
         this.getOrLoadChunk(new ChunkPos(pos)).addNode(node,pos);
     }
 
+    public void addPipe(BlockPos blockPos) {
+        this.getOrLoadChunk(new ChunkPos(blockPos)).addPipe(blockPos);
+    }
+
+    public void removePipe(BlockPos blockPos){
+        getOrLoadChunk(new ChunkPos(blockPos)).removePipe(blockPos);
+    }
+
+    public void removeNode(BlockPos pos) {
+        getOrLoadChunk(new ChunkPos(pos)).removeNode(pos);
+    }
+
     private SimulationChunk loadChunkFromDisk(ChunkPos chunkPos){
-        //TODO implement disk saving
+        //TODO implement disk loading
         return null;
     }
 
     private void saveChunkToDisk(ChunkPos pos,SimulationChunk chunk){
-        //TODO saving
+        String data = chunk.save();
+        try {
+            FileWriter writer = new FileWriter(new File(simulationSaveDirectory,getSavePathForChunk(pos)));
+            writer.write(data);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean isChunkOnDisk(ChunkPos pos){
-        //TODO implement disk saving
+        File chunkFile =  new File(simulationSaveDirectory,getSavePathForChunk(pos));
+        //return chunkFile.isFile();
         return false;
+    }
+
+    private String getSavePathForChunk(ChunkPos pos){
+        return String.format("x%dz%d.xml",pos.x,pos.z);
     }
 
     public void tick(){
@@ -77,17 +102,5 @@ public class SimulationWorld {
         for (Map.Entry<ChunkPos, SimulationChunk> toSave:loadedChunks.entrySet()){
             this.saveChunkToDisk(toSave.getKey(),toSave.getValue());
         }
-    }
-
-    public void addPipe(BlockPos blockPos) {
-        this.getOrLoadChunk(new ChunkPos(blockPos)).addPipe(blockPos);
-    }
-
-    public void removePipe(BlockPos blockPos){
-        getOrLoadChunk(new ChunkPos(blockPos)).removePipe(blockPos);
-    }
-
-    public void removeNode(BlockPos pos) {
-        getOrLoadChunk(new ChunkPos(pos)).removeNode(pos);
     }
 }

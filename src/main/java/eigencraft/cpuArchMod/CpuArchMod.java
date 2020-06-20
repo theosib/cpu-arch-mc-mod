@@ -5,16 +5,16 @@ import eigencraft.cpuArchMod.backend.dataObject.DataObjectType;
 import eigencraft.cpuArchMod.backend.simulation.SimulationIOManager;
 import eigencraft.cpuArchMod.backend.simulation.SimulationMaster;
 import eigencraft.cpuArchMod.backend.simulation.SimulationMasterProvider;
-import eigencraft.cpuArchMod.backend.simulation.SimulationWorld;
 import eigencraft.cpuArchMod.blocks.DataPipeBlock;
 import eigencraft.cpuArchMod.blocks.NodeContainerBlock;
 import eigencraft.cpuArchMod.items.DebugDataObjectItem;
 import eigencraft.cpuArchMod.simulationNode.IONode;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.server.ServerStartCallback;
-import net.fabricmc.fabric.api.event.server.ServerStopCallback;
 import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.util.NbtType;
@@ -30,6 +30,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
+import java.io.File;
 import java.util.LinkedList;
 
 public class CpuArchMod implements ModInitializer {
@@ -45,14 +46,30 @@ public class CpuArchMod implements ModInitializer {
 	public static final Block DATA_PIPE_BLOCK = new DataPipeBlock(FabricBlockSettings.of(Material.METAL).breakByHand(true).hardness((float)Math.PI).build());
 
 	public static final Block IO_NODE = new NodeContainerBlock(FabricBlockSettings.of(Material.METAL).breakByHand(true).hardness((float)Math.PI).build(), IONode::new);
+
+	@Environment(EnvType.SERVER)
+	public static MinecraftServer mcServer;
 	
 
 	@Override
 	public void onInitialize() {
+		ServerStartCallback.EVENT.register(new ServerStartCallback() {
+			@Override
+			public void onStartServer(MinecraftServer minecraftServer) {
+				for (World world:minecraftServer.getWorlds()){
+					if (!world.isClient){
+						//minecraftServer.getLevelStorage().getSavesDirectory()
+						File worldPath = world.getDimension().getType().getSaveDirectory(minecraftServer.getLevelStorage().createSaveHandler(minecraftServer.getLevelName(),minecraftServer).getWorldDir());
+						((SimulationMasterProvider)world).getSimulationMaster().launchSimulationWorld(new File(worldPath,"cpu_sim"));
+					}
+				}
+			}
+		});
 
 		ServerTickCallback.EVENT.register(new ServerTickCallback() {
 			@Override
 			public void tick(MinecraftServer minecraftServer) {
+				//minecraftServer.getWo
 				//Interface between simulation thread and game thread, executed for every dimension
 				for (World world:minecraftServer.getWorlds()){
 					SimulationMaster worldSimulationMaster = ((SimulationMasterProvider)world).getSimulationMaster();

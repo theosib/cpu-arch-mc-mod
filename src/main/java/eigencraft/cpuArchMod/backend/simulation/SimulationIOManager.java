@@ -1,9 +1,6 @@
 package eigencraft.cpuArchMod.backend.simulation;
 
-import eigencraft.cpuArchMod.backend.dataObject.DataObject;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 
 import java.util.LinkedList;
 
