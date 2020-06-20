@@ -22,6 +22,10 @@ public abstract class SimulationNode{
         nodeTypeRegistry.put(type.getSimpleName(),constructor);
     }
 
+    public static Function<BlockPos,SimulationNode> getFromName(String name){
+        return (nodeTypeRegistry.containsKey(name))?nodeTypeRegistry.get(name):null;
+    }
+
     public abstract void process(DataObject inMessages,SimulationIOManager ioManager);
 
     public void processDirectInput(DataObject inMessage, SimulationIOManager ioManager){

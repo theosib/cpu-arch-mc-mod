@@ -25,14 +25,14 @@ public class SimulationWorld {
     }
 
     public SimulationChunk getOrLoadChunk(ChunkPos chunkPos){
-        //System.out.println(String.format("Requested chunk %d, %d",chunkPos.x,chunkPos.z));
         //If already loaded, return it
         if (loadedChunks.containsKey(chunkPos)) return loadedChunks.get(chunkPos);
-
+        System.out.println(String.format("Requested chunk %d, %d",chunkPos.x,chunkPos.z));
         //If saved
         if (this.isChunkOnDisk(chunkPos)){
-            SimulationChunk newChunk = this.loadChunkFromDisk(chunkPos);
+            SimulationChunk newChunk = new SimulationChunk(chunkPos,this);
             loadedChunks.put(chunkPos,newChunk);
+            new XMLChunkBuilder(newChunk,this,new File(simulationSaveDirectory,getSavePathForChunk(chunkPos)));
             return newChunk;
         }
         // Create new, empty Chunk
@@ -59,26 +59,27 @@ public class SimulationWorld {
         getOrLoadChunk(new ChunkPos(pos)).removeNode(pos);
     }
 
-    private SimulationChunk loadChunkFromDisk(ChunkPos chunkPos){
-        //TODO implement disk loading
-        return null;
-    }
-
     private void saveChunkToDisk(ChunkPos pos,SimulationChunk chunk){
-        String data = chunk.save();
-        try {
-            FileWriter writer = new FileWriter(new File(simulationSaveDirectory,getSavePathForChunk(pos)));
-            writer.write(data);
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        File chunkFile = new File(simulationSaveDirectory, getSavePathForChunk(pos));
+        if (chunk.shouldSave()){
+            String data = chunk.save();
+            try {
+                FileWriter writer = new FileWriter(chunkFile);
+                writer.write(data);
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            if (chunkFile.exists()){
+                chunkFile.delete();
+            }
         }
     }
 
     private boolean isChunkOnDisk(ChunkPos pos){
         File chunkFile =  new File(simulationSaveDirectory,getSavePathForChunk(pos));
-        //return chunkFile.isFile();
-        return false;
+        return chunkFile.isFile();
     }
 
     private String getSavePathForChunk(ChunkPos pos){

@@ -8,11 +8,6 @@ import java.util.*;
 public class SimulationChunk {
     ChunkPos chunkPos;
 
-    private int northLoadLevel = 0;
-    private int southLoadLevel = 0;
-    private int eastLoadLevel = 0;
-    private int westLoadLevel = 0;
-
     public SimulationChunk(ChunkPos chunkPos, SimulationWorld world) {
         this.chunkPos = chunkPos;
         this.world = world;
@@ -25,10 +20,6 @@ public class SimulationChunk {
     public String save(){
         StringBuilder xmlString = new StringBuilder();
         xmlString.append("<chunk>");
-        xmlString.append(String.format("<chunkLoading direction='%s' level='%d' />","north",northLoadLevel));
-        xmlString.append(String.format("<chunkLoading direction='%s' level='%d' />","south",southLoadLevel));
-        xmlString.append(String.format("<chunkLoading direction='%s' level='%d' />","east",eastLoadLevel));
-        xmlString.append(String.format("<chunkLoading direction='%s' level='%d' />","west",westLoadLevel));
         for (SimulationNode node:nodes.values()) {
             xmlString.append(String.format("<node x='%d' y='%d' z='%d' type='%s' />",node.position.getX(),node.position.getY(),node.position.getZ(),node.getClass().getSimpleName()));
         }
@@ -38,6 +29,10 @@ public class SimulationChunk {
 
         xmlString.append("</chunk>");
         return xmlString.toString();
+    }
+
+    public boolean shouldSave(){
+        return (!nodes.isEmpty())||(!pipes.isEmpty());
     }
 
     public void addNode(SimulationNode node, BlockPos pos){
@@ -57,16 +52,12 @@ public class SimulationChunk {
     public void removeNode(BlockPos pos) {
         nodes.remove(pos.hashCode());
         if (!chunkPos.equals(new ChunkPos(pos.north()))){
-            northLoadLevel--;
         }
         if (!chunkPos.equals(new ChunkPos(pos.south()))){
-            southLoadLevel--;
         }
         if (!chunkPos.equals(new ChunkPos(pos.east()))){
-            eastLoadLevel--;
         }
         if (!chunkPos.equals(new ChunkPos(pos.west()))){
-            westLoadLevel--;
         }
     }
 
@@ -107,22 +98,18 @@ public class SimulationChunk {
             if (!chunkPos.equals(new ChunkPos(pos.north()))){
                 ChunkPos toLoad = new ChunkPos(pos.north());
                 world.getOrLoadChunk(toLoad).removePipeConnections(toRemove);
-                northLoadLevel--;
             }
             if (!chunkPos.equals(new ChunkPos(pos.south()))){
                 ChunkPos toLoad = new ChunkPos(pos.south());
                 world.getOrLoadChunk(toLoad).removePipeConnections(toRemove);
-                southLoadLevel--;
             }
             if (!chunkPos.equals(new ChunkPos(pos.east()))){
                 ChunkPos toLoad = new ChunkPos(pos.east());
                 world.getOrLoadChunk(toLoad).removePipeConnections(toRemove);
-                eastLoadLevel--;
             }
             if (!chunkPos.equals(new ChunkPos(pos.west()))){
                 ChunkPos toLoad = new ChunkPos(pos.west());
                 world.getOrLoadChunk(toLoad).removePipeConnections(toRemove);
-                westLoadLevel--;
             }
         }
     }
@@ -162,22 +149,18 @@ public class SimulationChunk {
         if (!chunkPos.equals(new ChunkPos(pos.north()))){
             ChunkPos toLoad = new ChunkPos(pos.north());
             world.getOrLoadChunk(toLoad);
-            northLoadLevel++;
         }
         if (!chunkPos.equals(new ChunkPos(pos.south()))){
             ChunkPos toLoad = new ChunkPos(pos.south());
             world.getOrLoadChunk(toLoad);
-            southLoadLevel++;
         }
         if (!chunkPos.equals(new ChunkPos(pos.east()))){
             ChunkPos toLoad = new ChunkPos(pos.east());
             world.getOrLoadChunk(toLoad);
-            eastLoadLevel++;
         }
         if (!chunkPos.equals(new ChunkPos(pos.west()))){
             ChunkPos toLoad = new ChunkPos(pos.west());
             world.getOrLoadChunk(toLoad);
-            westLoadLevel++;
         }
     }
 

@@ -5,6 +5,7 @@ import eigencraft.cpuArchMod.backend.dataObject.DataObjectType;
 import eigencraft.cpuArchMod.backend.simulation.SimulationIOManager;
 import eigencraft.cpuArchMod.backend.simulation.SimulationMaster;
 import eigencraft.cpuArchMod.backend.simulation.SimulationMasterProvider;
+import eigencraft.cpuArchMod.backend.simulation.SimulationNode;
 import eigencraft.cpuArchMod.blocks.DataPipeBlock;
 import eigencraft.cpuArchMod.blocks.NodeContainerBlock;
 import eigencraft.cpuArchMod.items.DebugDataObjectItem;
@@ -114,5 +115,7 @@ public class CpuArchMod implements ModInitializer {
 		DataObjectType dataObjectType = DataObjectType.create("test");
 		dataObjectType.addTag("int",NbtType.INT);
 		dataObjectType.addTag("string",NbtType.STRING);
+
+		SimulationNode.register(IONode.class,IONode::new);
 	}
 }
