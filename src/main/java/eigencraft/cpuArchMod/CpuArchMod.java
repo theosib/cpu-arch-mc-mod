@@ -48,8 +48,6 @@ public class CpuArchMod implements ModInitializer {
 
 	public static final Block DATA_PIPE_BLOCK = new DataPipeBlock(FabricBlockSettings.of(Material.METAL).breakByHand(true).hardness((float)Math.PI).build());
 
-	public static final Block IO_NODE = new NodeContainerBlock(FabricBlockSettings.of(Material.METAL).breakByHand(true).hardness((float)Math.PI).build(), IONode::new);
-
 	@Environment(EnvType.SERVER)
 	public static MinecraftServer mcServer;
 	
@@ -85,11 +83,13 @@ public class CpuArchMod implements ModInitializer {
 		//Register items
 		Registry.register(Registry.ITEM, new Identifier(MODID, "data_object_disk_item"), DEBUG_DATA_OBJECT_ITEM);
 		Registry.register(Registry.ITEM, new Identifier(MODID, "data_pipe_item"), new BlockItem(DATA_PIPE_BLOCK, new Item.Settings().group(CPU_ARCH_MOD_ITEM_GROUP)));
-		Registry.register(Registry.ITEM, new Identifier(MODID, "ionode"), new BlockItem(IO_NODE, new Item.Settings().group(CPU_ARCH_MOD_ITEM_GROUP)));
 
 		//Register blocks
 		Registry.register(Registry.BLOCK,new Identifier(MODID,"data_pipe"),DATA_PIPE_BLOCK);
-		Registry.register(Registry.BLOCK,new Identifier(MODID,"ionode"),IO_NODE);
+
+		//Register nodes
+		NodeContainerBlock.create(IONode.class,IONode::new);
+
 
 		//Register packages
 		ServerSidePacketRegistry.INSTANCE.register(DATAOBJECT_GUI_SAVE_C2S_PACKET, (packetContext, attachedData) -> {
@@ -116,6 +116,5 @@ public class CpuArchMod implements ModInitializer {
 		dataObjectType.addTag("int",NbtType.INT);
 		dataObjectType.addTag("string",NbtType.STRING);
 
-		SimulationNode.register(IONode.class,IONode::new);
 	}
 }

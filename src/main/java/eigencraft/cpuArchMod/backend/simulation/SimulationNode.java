@@ -20,8 +20,8 @@ public abstract class SimulationNode{
         this.position = position;
     }
 
-    public static void register(Class type,Function<BlockPos,SimulationNode> constructor){
-        nodeTypeRegistry.put(type.getSimpleName(),constructor);
+    public static void register(String type,Function<BlockPos,SimulationNode> constructor){
+        nodeTypeRegistry.put(type,constructor);
     }
 
     public static Function<BlockPos,SimulationNode> getFromName(String name){
