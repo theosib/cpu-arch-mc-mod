@@ -27,8 +27,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerChunkManager;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -61,7 +59,9 @@ public class CpuArchMod implements ModInitializer {
 			public void onStartServer(MinecraftServer minecraftServer) {
 				for (World world:minecraftServer.getWorlds()){
 					if (!world.isClient){
-						((SimulationMasterProvider)world).getSimulationMaster().launchSimulationWorld(world);
+						//minecraftServer.getLevelStorage().getSavesDirectory()
+						File worldPath = world.getDimension().getType().getSaveDirectory(minecraftServer.getLevelStorage().createSaveHandler(minecraftServer.getLevelName(),minecraftServer).getWorldDir());
+						((SimulationMasterProvider)world).getSimulationMaster().launchSimulationWorld(new File(worldPath,"cpu_sim"));
 					}
 				}
 			}

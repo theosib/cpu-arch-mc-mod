@@ -14,9 +14,9 @@ import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.PacketByteBuf;
 
 public class DataObjectEditGUI extends LightweightGuiDescription {
     private static Gson gson;

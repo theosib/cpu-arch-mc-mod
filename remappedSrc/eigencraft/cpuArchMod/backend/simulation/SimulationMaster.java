@@ -1,7 +1,5 @@
 package eigencraft.cpuArchMod.backend.simulation;
 
-import net.minecraft.world.World;
-
 import java.io.File;
 
 public class SimulationMaster implements Runnable{
@@ -9,15 +7,13 @@ public class SimulationMaster implements Runnable{
     private Thread simulationExecutor;
     private boolean simulationRunning = true;
     private int tickCounter = 0;
-    File savePath;
 
-    public SimulationMaster(File savePath){
-        this.savePath = savePath;
+    public SimulationMaster(){
     }
 
-    public void launchSimulationWorld(World gameWorld){
+    public void launchSimulationWorld(File savePath){
         savePath.mkdirs();
-        world = new SimulationWorld(savePath, gameWorld);
+        world = new SimulationWorld(savePath);
         simulationExecutor = new Thread(this);
 
         //Always last

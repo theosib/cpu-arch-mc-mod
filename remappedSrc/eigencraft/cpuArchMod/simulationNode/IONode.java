@@ -30,7 +30,7 @@ public class IONode extends SimulationNode {
                     }
                 });
                 dataObjectItem.putSubTag("dataObject",inMessage.getCompoundTag());
-                ItemScatterer.spawn(ioManager.getWorld(),position.getX(),position.getY()+1,position.getZ(),dataObjectItem);
+                ItemScatterer.spawn(server.getWorld(DimensionType.OVERWORLD),position.getX(),position.getY()+1,position.getZ(),dataObjectItem);
             }
         });
     }

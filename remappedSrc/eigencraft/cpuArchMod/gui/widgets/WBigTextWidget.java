@@ -6,8 +6,6 @@ import io.github.cottonmc.cotton.gui.widget.data.Color;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.StringRenderable;
 
 import java.util.List;
 
@@ -38,11 +36,40 @@ public class WBigTextWidget extends WWidget {
         return true;
     }
 
-
+    @Environment(EnvType.CLIENT)
     @Override
-    public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
-        //TODO rendering
-        super.paint(matrices, x, y, mouseX, mouseY);
+    public void paintBackground(int x, int y, int mouseX, int mouseY) {
+        if (this.isFocused()){
+            ScreenDrawing.coloredRect(x, y, width, height, TEXT_COLOR);
+            ScreenDrawing.coloredRect(x+ BORDER_WIDTH, y+ BORDER_WIDTH, width-2* BORDER_WIDTH, height-2* BORDER_WIDTH, BG_COLOR);
+        } else {
+            ScreenDrawing.coloredRect(x, y, width, height, BG_COLOR);
+        }
+
+        int yLevel = y+5+ BORDER_WIDTH -MinecraftClient.getInstance().textRenderer.fontHeight;
+
+        int usableSpace = getWidth()-2*BORDER_WIDTH-2*SIDE_PADDING;
+
+        List<String> untilCursor = MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(text.substring(0, index),usableSpace);
+        int toCursorLineWidth = ((untilCursor.size()>0)?MinecraftClient.getInstance().textRenderer.getStringWidth(untilCursor.get(untilCursor.size()-1)):0);
+        int widthFromCursorToLineEnd = usableSpace-toCursorLineWidth-CURSOR_GAP_SIZE;
+        int charCountAfterCursor = MinecraftClient.getInstance().textRenderer.getCharacterCountForWidth(text.substring(index),widthFromCursorToLineEnd);
+        String afterCursorString = text.substring(index,index+charCountAfterCursor);
+        List<String> nextLineFromCursor = MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(text.substring(index+charCountAfterCursor),usableSpace);
+
+        for(String line:untilCursor){
+            yLevel += MinecraftClient.getInstance().textRenderer.fontHeight;
+            ScreenDrawing.drawString(line,x+BORDER_WIDTH+SIDE_PADDING,yLevel, TEXT_COLOR);
+        }
+        ScreenDrawing.coloredRect(x+BORDER_WIDTH+toCursorLineWidth+CURSOR_SPACE_SIDE+SIDE_PADDING,yLevel,CURSOR_WIDTH,MinecraftClient.getInstance().textRenderer.fontHeight-2,TEXT_COLOR);
+
+        ScreenDrawing.drawString(afterCursorString,x+BORDER_WIDTH +toCursorLineWidth+ CURSOR_GAP_SIZE+SIDE_PADDING,yLevel, TEXT_COLOR);
+
+        for(String line:nextLineFromCursor){
+            yLevel += MinecraftClient.getInstance().textRenderer.fontHeight;
+            ScreenDrawing.drawString(line,x+ BORDER_WIDTH+SIDE_PADDING,yLevel, TEXT_COLOR);
+        }
+
     }
 
     @Override

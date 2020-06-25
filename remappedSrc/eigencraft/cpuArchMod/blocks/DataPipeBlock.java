@@ -9,16 +9,16 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 
 public class DataPipeBlock extends Block {
     public DataPipeBlock(Settings settings) {
         super(settings);
     }
 
+
     @Override
-    public void onBroken(WorldAccess world, BlockPos pos, BlockState state) {
-        if (!world.isClient()){
+    public void onBlockRemoved(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if (!world.isClient){
             ((SimulationMasterProvider)world).getSimulationMaster().getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
                 @Override
                 public void run(SimulationWorld simulationWorld) {
@@ -26,7 +26,7 @@ public class DataPipeBlock extends Block {
                 }
             });
         }
-        super.onBroken(world,pos,state);
+        super.onBlockRemoved(state, world, pos, newState, moved);
     }
 
     @Override

@@ -2,7 +2,6 @@ package eigencraft.cpuArchMod.backend.simulation;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -17,9 +16,9 @@ public class SimulationWorld {
     SimulationIOManager ioManager;
     File simulationSaveDirectory;
 
-    public SimulationWorld(File simulationSaveDirectory, World world) {
+    public SimulationWorld(File simulationSaveDirectory) {
         this.simulationSaveDirectory = simulationSaveDirectory;
-        this.ioManager = new SimulationIOManager(world);
+        this.ioManager = new SimulationIOManager();
     }
 
     public SimulationIOManager getIoManager() {

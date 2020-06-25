@@ -4,8 +4,7 @@
   "package": "eigencraft.cpuArchMod.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "WorldMixin",
-    "WorldSaveHandlerMixin"
+    "ServerWorldMixin",
   ],
   "client": [
   ],
