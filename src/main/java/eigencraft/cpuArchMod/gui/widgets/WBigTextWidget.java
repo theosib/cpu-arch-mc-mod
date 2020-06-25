@@ -7,6 +7,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.StringRenderable;
 
 import java.util.List;
@@ -16,9 +17,7 @@ public class WBigTextWidget extends WWidget {
     private static final int TEXT_COLOR = new Color.RGB(255,255,255,255).toRgb();
     private final static int SIDE_PADDING = 5;
     private static final int BORDER_WIDTH = 3;
-    private final static int CURSOR_WIDTH = 2;
-    private final static int CURSOR_SPACE_SIDE = 1;
-    private final static int CURSOR_GAP_SIZE = CURSOR_SPACE_SIDE+CURSOR_WIDTH+CURSOR_SPACE_SIDE;
+    
 
     StringBuilder text = new StringBuilder();
 
@@ -42,15 +41,25 @@ public class WBigTextWidget extends WWidget {
     @Override
     public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
         //TODO rendering
-        
+        if (this.isFocused()){
+            ScreenDrawing.coloredRect(x, y, width, height, TEXT_COLOR);
+            ScreenDrawing.coloredRect(x+ BORDER_WIDTH, y+ BORDER_WIDTH, width-2* BORDER_WIDTH, height-2* BORDER_WIDTH, BG_COLOR);
+        } else {
+            ScreenDrawing.coloredRect(x, y, width, height, BG_COLOR);
+        }
+
+        int yLevel = y+5+ BORDER_WIDTH;
+        final int usableSpace = getWidth()-2*BORDER_WIDTH-2*SIDE_PADDING;
+
+        List<StringRenderable> lines =  MinecraftClient.getInstance().textRenderer.wrapLines(new LiteralText(text.substring(0, index) + "|" + text.substring(index)),usableSpace);
+        for (StringRenderable line:lines){
+            ScreenDrawing.drawString(matrices, line.getString(),x+BORDER_WIDTH+SIDE_PADDING,yLevel,TEXT_COLOR);
+            yLevel += MinecraftClient.getInstance().textRenderer.fontHeight;
+        }
     }
 
     @Override
     public void onKeyPressed(int ch, int key, int modifiers) {
-        System.out.println(key);
-        System.out.print(text.length());
-        System.out.print(" ");
-        System.out.print(index);
         if (key== 123){
             index = (--index>=0)?index:0;
         } else if (key== 124){
