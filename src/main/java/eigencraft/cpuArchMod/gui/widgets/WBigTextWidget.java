@@ -42,7 +42,7 @@ public class WBigTextWidget extends WWidget {
     @Override
     public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
         //TODO rendering
-        super.paint(matrices, x, y, mouseX, mouseY);
+        
     }
 
     @Override
