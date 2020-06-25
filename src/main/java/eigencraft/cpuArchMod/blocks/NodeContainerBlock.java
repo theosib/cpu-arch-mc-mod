@@ -1,11 +1,11 @@
 package eigencraft.cpuArchMod.blocks;
 
-import eigencraft.cpuArchMod.backend.dataObject.DataObject;
-import eigencraft.cpuArchMod.backend.dataObject.DataObjectType;
-import eigencraft.cpuArchMod.backend.simulation.SimulationIOManager;
-import eigencraft.cpuArchMod.backend.simulation.SimulationMasterProvider;
-import eigencraft.cpuArchMod.backend.simulation.SimulationNode;
-import eigencraft.cpuArchMod.backend.simulation.SimulationWorld;
+import eigencraft.cpuArchMod.dataObject.DataObject;
+import eigencraft.cpuArchMod.dataObject.DataObjectType;
+import eigencraft.cpuArchMod.simulation.SimulationIOManager;
+import eigencraft.cpuArchMod.simulation.SimulationMasterProvider;
+import eigencraft.cpuArchMod.simulation.SimulationNode;
+import eigencraft.cpuArchMod.simulation.SimulationWorld;
 import eigencraft.cpuArchMod.items.DebugDataObjectItem;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.Block;

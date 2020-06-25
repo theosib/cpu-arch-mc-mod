@@ -1,4 +1,4 @@
-package eigencraft.cpuArchMod.backend.simulation;
+package eigencraft.cpuArchMod.simulation;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;

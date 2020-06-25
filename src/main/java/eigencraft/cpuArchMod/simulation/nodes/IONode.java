@@ -1,17 +1,15 @@
-package eigencraft.cpuArchMod.simulationNode;
+package eigencraft.cpuArchMod.simulation.nodes;
 
 import eigencraft.cpuArchMod.CpuArchMod;
-import eigencraft.cpuArchMod.backend.dataObject.DataObject;
-import eigencraft.cpuArchMod.backend.simulation.SimulationIOManager;
-import eigencraft.cpuArchMod.backend.simulation.SimulationNode;
-import eigencraft.cpuArchMod.backend.simulation.SimulationWorld;
+import eigencraft.cpuArchMod.dataObject.DataObject;
+import eigencraft.cpuArchMod.simulation.SimulationIOManager;
+import eigencraft.cpuArchMod.simulation.SimulationNode;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.dimension.DimensionType;
 
 public class IONode extends SimulationNode {
     public IONode(BlockPos position) {

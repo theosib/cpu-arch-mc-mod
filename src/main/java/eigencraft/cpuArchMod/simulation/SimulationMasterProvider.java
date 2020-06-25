@@ -1,4 +1,4 @@
-package eigencraft.cpuArchMod.backend.simulation;
+package eigencraft.cpuArchMod.simulation;
 
 public interface SimulationMasterProvider {
 

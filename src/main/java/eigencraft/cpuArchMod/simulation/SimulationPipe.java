@@ -1,6 +1,6 @@
-package eigencraft.cpuArchMod.backend.simulation;
+package eigencraft.cpuArchMod.simulation;
 
-import eigencraft.cpuArchMod.backend.dataObject.DataObject;
+import eigencraft.cpuArchMod.dataObject.DataObject;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.*;

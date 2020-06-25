@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import eigencraft.cpuArchMod.CpuArchMod;
-import eigencraft.cpuArchMod.backend.dataObject.DataObject;
+import eigencraft.cpuArchMod.dataObject.DataObject;
 import eigencraft.cpuArchMod.gui.widgets.WBigTextWidget;
 import eigencraft.cpuArchMod.util.GsonDataObjectDeserializer;
 import eigencraft.cpuArchMod.util.GsonDataObjectSerializer;

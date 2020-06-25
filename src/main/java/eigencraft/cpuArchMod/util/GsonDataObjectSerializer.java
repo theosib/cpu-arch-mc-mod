@@ -1,7 +1,7 @@
 package eigencraft.cpuArchMod.util;
 
 import com.google.gson.*;
-import eigencraft.cpuArchMod.backend.dataObject.DataObject;
+import eigencraft.cpuArchMod.dataObject.DataObject;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.*;
 

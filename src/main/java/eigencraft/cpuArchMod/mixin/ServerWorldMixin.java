@@ -1,7 +1,7 @@
 package eigencraft.cpuArchMod.mixin;
 
-import eigencraft.cpuArchMod.backend.simulation.SimulationMaster;
-import eigencraft.cpuArchMod.backend.simulation.SimulationMasterProvider;
+import eigencraft.cpuArchMod.simulation.SimulationMaster;
+import eigencraft.cpuArchMod.simulation.SimulationMasterProvider;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ServerWorld;

@@ -1,4 +1,4 @@
-package eigencraft.cpuArchMod.backend.dataObject;
+package eigencraft.cpuArchMod.dataObject;
 
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.CompoundTag;

@@ -1,8 +1,8 @@
 package eigencraft.cpuArchMod.blocks;
 
-import eigencraft.cpuArchMod.backend.simulation.SimulationIOManager;
-import eigencraft.cpuArchMod.backend.simulation.SimulationMasterProvider;
-import eigencraft.cpuArchMod.backend.simulation.SimulationWorld;
+import eigencraft.cpuArchMod.simulation.SimulationIOManager;
+import eigencraft.cpuArchMod.simulation.SimulationMasterProvider;
+import eigencraft.cpuArchMod.simulation.SimulationWorld;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;

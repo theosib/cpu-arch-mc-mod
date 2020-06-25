@@ -1,8 +1,8 @@
 package eigencraft.cpuArchMod.items;
 
 import eigencraft.cpuArchMod.CpuArchMod;
-import eigencraft.cpuArchMod.backend.dataObject.DataObject;
-import eigencraft.cpuArchMod.backend.dataObject.DataObjectType;
+import eigencraft.cpuArchMod.dataObject.DataObject;
+import eigencraft.cpuArchMod.dataObject.DataObjectType;
 import eigencraft.cpuArchMod.gui.DataObjectEditGUI;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import net.fabricmc.api.EnvType;
