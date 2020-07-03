@@ -2,6 +2,7 @@ package eigencraft.cpuArchMod.simulation;
 
 import eigencraft.cpuArchMod.dataObject.DataObject;
 import net.minecraft.util.math.BlockPos;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.*;
 
@@ -65,6 +66,7 @@ public class SimulationPipe{
                     pipe.interPipePublish(dataObject, this);
                 } catch (StackOverflowError stackOverflow) {
                     //TODO what if a pipe causes a stackOverflow
+                    LogManager.getLogger().info("Too long pipe!");
                 }
             }
         }

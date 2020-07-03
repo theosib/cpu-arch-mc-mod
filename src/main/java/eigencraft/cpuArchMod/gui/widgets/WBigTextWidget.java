@@ -40,7 +40,6 @@ public class WBigTextWidget extends WWidget {
 
     @Override
     public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
-        //TODO rendering
         if (this.isFocused()){
             ScreenDrawing.coloredRect(x, y, width, height, TEXT_COLOR);
             ScreenDrawing.coloredRect(x+ BORDER_WIDTH, y+ BORDER_WIDTH, width-2* BORDER_WIDTH, height-2* BORDER_WIDTH, BG_COLOR);

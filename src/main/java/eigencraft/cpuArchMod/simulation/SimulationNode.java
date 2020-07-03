@@ -1,6 +1,8 @@
 package eigencraft.cpuArchMod.simulation;
 
 import eigencraft.cpuArchMod.dataObject.DataObject;
+import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.HashMap;
@@ -68,4 +70,5 @@ public abstract class SimulationNode{
     public boolean removePipe(SimulationPipe toRemove){
         return connectedPipes.remove(toRemove);
     }
+    public void onUse(SimulationIOManager ioManager, PlayerEntity player){};
 }

@@ -1,8 +1,14 @@
 {
   "item.cpu_arch_mod.data_object_disk_item":"dataObject disk&debugger",
   "itemGroup.cpu_arch_mod.mod_creative_item_group":"cpu architecture mod",
-  "item.cpu_arch_mod.gui_button_save":"Save changes",
-  "item.cpu_arch_mod.dataobject_gui_invalid_json": "Invalid dataObject json!",
+  "gui.cpu_arch_mod.gui_button_save":"Save changes",
+  "gui.cpu_arch_mod.dataobject_gui_invalid_json": "Invalid dataObject json!",
   "item.cpu_arch_mod.data_pipe_item": "data pipe",
-  "block.cpu_arch_mod.data_pipe": "data pipe"
+  "block.cpu_arch_mod.data_pipe": "data pipe",
+  "gui.cpu_arch_mod.select": "Select",
+  "gui.cpu_arch_mod.change_data_object_type": "change types",
+  "gui.cpu_arch_mod.back_to_main_menu": "back",
+  "gui.cpu_arch_mod.output": "output",
+  "gui.cpu_arch_mod.input": "input",
+  "gui.cpu_arch_mod.unassigned_conversion_field": "unassigned"
 }

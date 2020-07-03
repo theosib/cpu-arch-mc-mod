@@ -2,7 +2,9 @@ package eigencraft.cpuArchMod.dataObject;
 
 import net.fabricmc.fabric.api.util.NbtType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class DataObjectType {
     private static HashMap<String,DataObjectType> types = new HashMap<>();
@@ -55,9 +57,27 @@ public class DataObjectType {
         return requiredTags;
     }
 
+    public boolean matchesType(DataObject in){
+        return (in.getType().equals(name));
+    }
+
+    public int getFieldTypeFromName(String name){
+        if (!requiredTags.containsKey(name))return 0;
+        return requiredTags.get(name);
+    }
+
     public static DataObjectType getDataObjectTypeFromName(String name) throws UnknownDataObjectTypeException {
         if (!types.containsKey(name)) throw new UnknownDataObjectTypeException();
         return types.get(name);
+    }
+
+    public static DataObjectType getDataObjectTypeFromNameOrNull(String name){
+        if (!types.containsKey(name)) return null;
+        return types.get(name);
+    }
+
+    public static List<String> getDataObjectTypeNames(){
+        return new ArrayList<String>(types.keySet());
     }
 
     public static class UnknownDataObjectTypeException extends Exception{}

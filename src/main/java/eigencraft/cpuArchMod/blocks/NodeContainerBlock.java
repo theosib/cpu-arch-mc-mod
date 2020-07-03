@@ -35,27 +35,36 @@ import static eigencraft.cpuArchMod.CpuArchMod.MODID;
 public class NodeContainerBlock extends Block {
     private static final Settings blockSettings = FabricBlockSettings.of(Material.METAL).breakByHand(true).hardness((float)Math.PI).build();
 
+    //To create a new instance
     private Function<BlockPos,SimulationNode> constructor;
 
+    /***
+     * Factory function for a simulation node. Registers a block, an item and the simulationNode
+     * @param type node.class
+     * @param constructor node::new
+     */
     public static void create(Class type,Function<BlockPos,SimulationNode> constructor){
         SimulationNode.register(type.getSimpleName(),constructor);
         NodeContainerBlock newNodeContainerBlock = new NodeContainerBlock(blockSettings,constructor);
-        //System.out.println(type.getSimpleName());
         Registry.register(Registry.ITEM, new Identifier(MODID, type.getSimpleName().toLowerCase()), new BlockItem(newNodeContainerBlock, new Item.Settings().group(CPU_ARCH_MOD_ITEM_GROUP)));
         Registry.register(Registry.BLOCK,new Identifier(MODID,type.getSimpleName().toLowerCase()),newNodeContainerBlock);
     }
 
-    public NodeContainerBlock(Settings settings, Function<BlockPos,SimulationNode> constructor) {
+    //private constructor, used from create
+    private NodeContainerBlock(Settings settings, Function<BlockPos,SimulationNode> constructor) {
         super(settings);
         this.constructor = constructor;
     }
 
     @Override
     public void onBroken(WorldAccess world, BlockPos pos, BlockState state) {
+        //Simulation is serverside
         if (!world.isClient()){
+            //Go to simulation thread
             ((SimulationMasterProvider)world).getSimulationMaster().getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
                 @Override
                 public void run(SimulationWorld simulationWorld) {
+                    //remove the node
                     simulationWorld.removeNode(pos);
                 }
             });
@@ -65,10 +74,13 @@ public class NodeContainerBlock extends Block {
 
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
+        //Simulation is serverside
         if (!world.isClient){
+            //Go to simulation thread
             ((SimulationMasterProvider)world).getSimulationMaster().getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
                 @Override
                 public void run(SimulationWorld simulationWorld) {
+                    //Create a new node instance and place it in the simulation world
                     simulationWorld.addNode(constructor.apply(pos),pos);
                 }
             });
@@ -80,6 +92,7 @@ public class NodeContainerBlock extends Block {
         if (hand.equals(Hand.MAIN_HAND)){
             ItemStack mainHandStack = player.inventory.getMainHandStack();
             if (mainHandStack.getItem() instanceof DebugDataObjectItem){
+                //Direct input
                 CompoundTag dataObjectNbt = mainHandStack.getSubTag("dataObject");
                 if (dataObjectNbt != null){
                     try {
@@ -100,9 +113,22 @@ public class NodeContainerBlock extends Block {
                     } catch (DataObjectType.UnknownDataObjectTypeException e) {
                     }
                 }
+            } else {
+                if (!world.isClient){
+                    //Trigger use
+                    ((SimulationMasterProvider) world).getSimulationMaster().getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
+                        @Override
+                        public void run(SimulationWorld simulationWorld) {
+                            SimulationNode node = simulationWorld.getOrLoadChunk(new ChunkPos(pos)).getNodeAt(pos);
+                            if (node != null){
+                                node.onUse(((SimulationMasterProvider) world).getSimulationMaster().getIOManager(), player);
+                            }
+                        }
+                    });
+                    return ActionResult.SUCCESS;
+                }
             }
         }
-
         return ActionResult.PASS;
     }
 }

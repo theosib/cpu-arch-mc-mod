@@ -3,6 +3,7 @@ package eigencraft.cpuArchMod.simulation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -31,9 +32,12 @@ public class SimulationWorld {
         System.out.println(String.format("Requested chunk %d, %d",chunkPos.x,chunkPos.z));
         //If saved
         if (this.isChunkOnDisk(chunkPos)){
+            //Create empty chunk
             SimulationChunk newChunk = new SimulationChunk(chunkPos,this);
+            //Mark chunk as loaded
             loadedChunks.put(chunkPos,newChunk);
-            new XMLChunkBuilder(newChunk,this,new File(simulationSaveDirectory,getSavePathForChunk(chunkPos)));
+            //Load the data
+            XMLChunkBuilder.load(newChunk,this,new File(simulationSaveDirectory,getSavePathForChunk(chunkPos)));
             return newChunk;
         }
         // Create new, empty Chunk
@@ -105,5 +109,7 @@ public class SimulationWorld {
         for (Map.Entry<ChunkPos, SimulationChunk> toSave:loadedChunks.entrySet()){
             this.saveChunkToDisk(toSave.getKey(),toSave.getValue());
         }
+        //TODO unload unused chunks
+        LogManager.getLogger().info("Saved simulation world");
     }
 }

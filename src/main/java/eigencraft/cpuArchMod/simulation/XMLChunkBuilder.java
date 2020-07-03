@@ -16,7 +16,11 @@ public class XMLChunkBuilder extends DefaultHandler {
     SimulationWorld world;
     SimulationChunk chunk;
 
-    public XMLChunkBuilder(SimulationChunk chunk, SimulationWorld world, File chunkFile) {
+    public static SimulationChunk load(SimulationChunk target,SimulationWorld world, File file){
+        return new XMLChunkBuilder(target,world,file).chunk;
+    }
+
+    private XMLChunkBuilder(SimulationChunk chunk, SimulationWorld world, File chunkFile) {
         this.chunk = chunk;
         this.world = world;
 

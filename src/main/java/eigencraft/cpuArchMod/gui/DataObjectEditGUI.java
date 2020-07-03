@@ -1,13 +1,10 @@
 package eigencraft.cpuArchMod.gui;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import eigencraft.cpuArchMod.CpuArchMod;
 import eigencraft.cpuArchMod.dataObject.DataObject;
 import eigencraft.cpuArchMod.gui.widgets.WBigTextWidget;
 import eigencraft.cpuArchMod.util.GsonDataObjectDeserializer;
-import eigencraft.cpuArchMod.util.GsonDataObjectSerializer;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
@@ -19,7 +16,6 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 
 public class DataObjectEditGUI extends LightweightGuiDescription {
-    private static Gson gson;
 
     public static DataObjectEditGUI fromExisting(DataObject dataObject){
         return new DataObjectEditGUI(dataObject);
@@ -29,13 +25,6 @@ public class DataObjectEditGUI extends LightweightGuiDescription {
     }
 
     private DataObjectEditGUI(DataObject dataObject){
-        //Create one static gson instance first time opened.
-        if (gson==null){
-            GsonBuilder gsonBuilder = new GsonBuilder();
-            gsonBuilder.registerTypeAdapter(DataObject.class,new GsonDataObjectSerializer());
-            gsonBuilder.registerTypeAdapter(DataObject.class,new GsonDataObjectDeserializer());
-            gson = gsonBuilder.create();
-        }
 
         //Root panel
         WGridPanel root = new WGridPanel();
@@ -55,20 +44,20 @@ public class DataObjectEditGUI extends LightweightGuiDescription {
             //Set type of dataObject
             label.setText(new LiteralText(dataObject.getType()));
             //Serialise to String
-            String jsonDataObject = gson.toJson(dataObject);
+            String jsonDataObject = CpuArchMod.GSON.toJson(dataObject);
             //Set text
             textField.setText(jsonDataObject);
         }
 
         //Add button to save
-        WButton saveButton = new WButton(new TranslatableText("item.cpu_arch_mod.gui_button_save"));
+        WButton saveButton = new WButton(new TranslatableText("gui.cpu_arch_mod.gui_button_save"));
         //Runs when clicked
         saveButton.setOnClick(new Runnable() {
             @Override
             public void run() {
                 try {
                     //Convert to DataObject
-                    DataObject editedObject = gson.fromJson(textField.getText(), DataObject.class);
+                    DataObject editedObject = CpuArchMod.GSON.fromJson(textField.getText(), DataObject.class);
                     //If text is empty, null is returned from gson
                     if (editedObject==null) throw new GsonDataObjectDeserializer.InvalidDataObjectJsonStructureError();
 
@@ -81,7 +70,7 @@ public class DataObjectEditGUI extends LightweightGuiDescription {
 
                 } catch (JsonSyntaxException| GsonDataObjectDeserializer.InvalidDataObjectJsonStructureError e){
                     //Invalid json
-                    label.setText(new TranslatableText("item.cpu_arch_mod.dataobject_gui_invalid_json"));
+                    label.setText(new TranslatableText("gui.cpu_arch_mod.dataobject_gui_invalid_json"));
                 }
             }
         });

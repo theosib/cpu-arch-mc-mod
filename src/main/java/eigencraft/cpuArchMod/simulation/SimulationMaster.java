@@ -18,7 +18,7 @@ public class SimulationMaster implements Runnable{
     public void launchSimulationWorld(World gameWorld){
         savePath.mkdirs();
         world = new SimulationWorld(savePath, gameWorld);
-        simulationExecutor = new Thread(this);
+        simulationExecutor = new Thread(this,String.format("cpu_arch_mod %s",gameWorld.getDimensionRegistryKey().getValue().getPath()));
 
         //Always last
         simulationExecutor.start();
@@ -39,14 +39,13 @@ public class SimulationMaster implements Runnable{
 
             //TODO proper tps stabiliser
             try {
-                Thread.sleep(1);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
             tickCounter++;
             if (tickCounter%1200==0){
-                //TODO autosave
                 world.saveAll();
             }
         }

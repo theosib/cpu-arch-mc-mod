@@ -20,6 +20,9 @@
   "entrypoints": {
     "main": [
       "eigencraft.cpuArchMod.CpuArchMod"
+    ],
+    "client": [
+      "eigencraft.cpuArchMod.CpuArchMod"
     ]
   },
   "mixins": [

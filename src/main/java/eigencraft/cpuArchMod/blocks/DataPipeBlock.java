@@ -18,10 +18,13 @@ public class DataPipeBlock extends Block {
 
     @Override
     public void onBroken(WorldAccess world, BlockPos pos, BlockState state) {
+        //Simulation is only server side
         if (!world.isClient()){
+            //Run it in the simulation thread
             ((SimulationMasterProvider)world).getSimulationMaster().getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
                 @Override
                 public void run(SimulationWorld simulationWorld) {
+                    //In the simulation thread, remove the pipe
                     simulationWorld.removePipe(pos);
                 }
             });
@@ -31,11 +34,13 @@ public class DataPipeBlock extends Block {
 
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
-
+        //Simulation is only server side
         if (!world.isClient){
+            //Run it in the simulation thread
             ((SimulationMasterProvider)world).getSimulationMaster().getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
                 @Override
                 public void run(SimulationWorld simulationWorld) {
+                    //In the simulation thread, add the pipe
                     simulationWorld.addPipe(pos);
                 }
             });
