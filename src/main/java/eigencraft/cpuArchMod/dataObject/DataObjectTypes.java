@@ -1,5 +1,7 @@
 package eigencraft.cpuArchMod.dataObject;
 
+import eigencraft.cpuArchMod.simulation.nodes.ByteConverterNode;
+import eigencraft.cpuArchMod.simulation.nodes.IntConverterNode;
 import net.fabricmc.fabric.api.util.NbtType;
 
 public class DataObjectTypes {
@@ -36,6 +38,16 @@ public class DataObjectTypes {
 
         FALSE_BOOLEAN = new DataObject(BOOLEAN_TYPE);
         FALSE_BOOLEAN.setByte("bool",(byte)0);
+
+        DataObjectConverterRegistry.addConverter(BYTE_TYPE,INT_TYPE, new IntConverterNode.ByteToIntConverter());
+        DataObjectConverterRegistry.addConverter(BYTE_ARRAY_TYPE,INT_TYPE, new IntConverterNode.ByteArrayToIntConverter());
+        DataObjectConverterRegistry.addConverter(INT_ARRAY_TYPE,INT_TYPE, new IntConverterNode.IntArrayToIntConverter());
+        DataObjectConverterRegistry.addConverter(BOOLEAN_TYPE,INT_TYPE, new IntConverterNode.BoolToIntConverter());
+
+        DataObjectConverterRegistry.addConverter(INT_TYPE,BYTE_TYPE, new ByteConverterNode.IntToByteConverter());
+        DataObjectConverterRegistry.addConverter(BYTE_ARRAY_TYPE,BYTE_TYPE, new ByteConverterNode.ByteArrayToByteConverter());
+        DataObjectConverterRegistry.addConverter(INT_ARRAY_TYPE,BYTE_TYPE, new ByteConverterNode.IntArrayToByteConverter());
+        DataObjectConverterRegistry.addConverter(BOOLEAN_TYPE,BYTE_TYPE, new ByteConverterNode.BoolToByteConverter());
     }
 
     public static boolean readBoolean(DataObject booleanDataObject){

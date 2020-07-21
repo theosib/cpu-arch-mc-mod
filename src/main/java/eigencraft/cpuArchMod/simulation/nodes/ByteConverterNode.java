@@ -1,10 +1,11 @@
 package eigencraft.cpuArchMod.simulation.nodes;
 
 import eigencraft.cpuArchMod.dataObject.DataObject;
+import eigencraft.cpuArchMod.dataObject.DataObjectConverter;
+import eigencraft.cpuArchMod.dataObject.DataObjectConverterRegistry;
 import eigencraft.cpuArchMod.dataObject.DataObjectTypes;
 import eigencraft.cpuArchMod.simulation.SimulationIOManager;
 import eigencraft.cpuArchMod.simulation.SimulationNode;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 
 public class ByteConverterNode extends SimulationNode {
@@ -14,19 +15,39 @@ public class ByteConverterNode extends SimulationNode {
 
     @Override
     public void process(DataObject inMessages, SimulationIOManager ioManager) {
-        DataObject dataObject = new DataObject(DataObjectTypes.BYTE_TYPE);
-        if (inMessages.matchType(DataObjectTypes.INT_TYPE)){
-            dataObject.setByte("data",(byte)inMessages.getInt("data"));
-        } else if (inMessages.matchType(DataObjectTypes.BYTE_TYPE)){
-            publish(inMessages);
-            return;
-        } else if (inMessages.matchType(DataObjectTypes.BOOLEAN_TYPE)){
-            dataObject.setByte("data",inMessages.getByte("bool"));
-        } else if (inMessages.matchType(DataObjectTypes.INT_ARRAY_TYPE)){
-            dataObject.setByte("data",(byte)inMessages.getIntArray("data")[0]);
-        } else if (inMessages.matchType(DataObjectTypes.BYTE_ARRAY_TYPE)){
-            dataObject.setByte("data",inMessages.getByteArray("data")[0]);
+        publish(DataObjectConverterRegistry.convert(inMessages, DataObjectTypes.BYTE_TYPE));
+    }
+
+    public static class IntToByteConverter extends DataObjectConverter {
+        @Override
+        public DataObject convert(DataObject in) {
+            DataObject o = new DataObject(DataObjectTypes.BYTE_TYPE);
+            o.setByte("data", (byte) in.getInt("data"));
+            return o;
         }
-        publish(dataObject);
+    }
+    public static class IntArrayToByteConverter extends DataObjectConverter {
+        @Override
+        public DataObject convert(DataObject in) {
+            DataObject o = new DataObject(DataObjectTypes.BYTE_TYPE);
+            o.setByte("data", (byte) in.getIntArray("data")[0]);
+            return o;
+        }
+    }
+    public static class ByteArrayToByteConverter extends DataObjectConverter {
+        @Override
+        public DataObject convert(DataObject in) {
+            DataObject o = new DataObject(DataObjectTypes.BYTE_TYPE);
+            o.setByte("data", (byte) in.getByteArray("data")[0]);
+            return o;
+        }
+    }
+    public static class BoolToByteConverter extends DataObjectConverter {
+        @Override
+        public DataObject convert(DataObject in) {
+            DataObject o = new DataObject(DataObjectTypes.BYTE_TYPE);
+            o.setByte("data", in.getByte("bool"));
+            return o;
+        }
     }
 }
