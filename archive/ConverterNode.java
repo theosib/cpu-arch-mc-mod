@@ -12,6 +12,10 @@ import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.StringRenderable;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.HashMap;
@@ -51,6 +55,7 @@ public class ConverterNode extends SimulationNode {
         HashMap<String,String> assignedByteFields = new HashMap<>();
         HashMap<String,String> assignedIntArrayFields = new HashMap<>();
         HashMap<String,String> assignedByteArrayFields = new HashMap<>();
+        HashMap<String,String> reverseConnections = new HashMap<>();
         public DataObject convert(DataObject in){
             if ((inputType!=null)&&(outputType!=null)){
                 if (inputType.matchesType(in)){
@@ -94,10 +99,13 @@ public class ConverterNode extends SimulationNode {
         }
         public boolean connect(String in, String out){
             if ((inputType!=null)&&(outputType!=null)){
+                System.out.println("first check");
                 int inputTypeType = inputType.getFieldTypeFromName(in);
                 int outputTypeType = outputType.getFieldTypeFromName(out);
+                System.out.println(String.format("intype=%d outtype=%d",inputTypeType,outputTypeType));
                 if (inputTypeType==0)return false;
                 if (outputTypeType==0)return false;
+                System.out.println("not null");
                 if (inputTypeType!=outputTypeType) return false;
                 switch (inputTypeType){
                     case NbtType.BYTE:{
@@ -121,6 +129,7 @@ public class ConverterNode extends SimulationNode {
                         break;
                     }
                 }
+                reverseConnections.put(out,in);
                 return true;
             }
             return false;
@@ -134,14 +143,10 @@ public class ConverterNode extends SimulationNode {
             return outputType;
         }
 
-        /***
-         * Gets the connected input from the name of an output
-         * @param outName
-         * @return
-         */
-        public String getConnection(String outName) {
-            //TODO implement it
-            return "unimplemented";
+
+        public StringRenderable getReverseConnection(String out) {
+            if (reverseConnections.containsKey(out)) return new LiteralText(reverseConnections.get(out));
+            return new TranslatableText("gui.cpu_arch_mod.unassigned_conversion_field");
         }
     }
 }

@@ -6,7 +6,7 @@
   "name": "cpu architecture mod",
   "description": "todo:description",
   "authors": [
-    ""
+    "recursive_tree"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
@@ -32,7 +32,7 @@
   "depends": {
     "fabricloader": ">=0.8.8",
     "fabric": "*",
-    "minecraft": "1.16.x"
+    "minecraft": "1.16.1"
   },
   "suggests": {
     "flamingo": "*"

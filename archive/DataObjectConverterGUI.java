@@ -1,9 +1,11 @@
 package eigencraft.cpuArchMod.gui;
 
 import eigencraft.cpuArchMod.dataObject.DataObjectType;
+import eigencraft.cpuArchMod.gui.widgets.WColorButton;
 import eigencraft.cpuArchMod.simulation.nodes.ConverterNode;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.cottonmc.cotton.gui.widget.data.Color;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
@@ -18,12 +20,18 @@ public class DataObjectConverterGUI extends LightweightGuiDescription {
 
     WGridPanel root;
     WListPanel<String, InputTypeEntry> typeSelectorList;
-    WListPanel<String,AdapterListEntry> fieldAssignmentList;
+    WListPanel<String,AdapterListEntry> fieldOverviewList;
+    WListPanel<String,DataObjectFieldEntry> fieldSelectorList;
     WButton changeInputTypeButton;
     WButton backToMainMenuButton;
     WLabel inputStringLabel;
     WLabel outputStringLabel;
     WDynamicLabel converterWhatToWhatLabel;
+
+    private String currentFieldSelectorOutput;
+
+    private WColorButton lastInputTypeButton;
+    private WColorButton lastOutputTypeButton;
 
     public DataObjectConverterGUI(ConverterNode.ConverterNodeConfiguration config) {
         configuration = config;
@@ -34,6 +42,14 @@ public class DataObjectConverterGUI extends LightweightGuiDescription {
         BiConsumer<String, InputTypeEntry> typeSelectorConfigurator = (String s, InputTypeEntry destination) -> {
             destination.typeName.setText(new LiteralText(s));
             destination.typeNameString = s;
+            if (s.equals(configuration.getInputType().getName())){
+                destination.selectInput.setColor(Color.GREEN.toRgb());
+                lastInputTypeButton = destination.selectInput;
+            }
+            if (s.equals(configuration.getOutputType().getName())){
+                destination.selectOutput.setColor(Color.GREEN.toRgb());
+                lastOutputTypeButton = destination.selectOutput;
+            }
         };
         typeSelectorList = new WListPanel<>(DataObjectType.getDataObjectTypeNames(), InputTypeEntry::new, typeSelectorConfigurator);
         typeSelectorList.setListItemHeight(1*18);
@@ -60,6 +76,7 @@ public class DataObjectConverterGUI extends LightweightGuiDescription {
         });
 
         rebuildAssignmentList();
+        rebuildFieldSelectorList();
 
         buildMainMenu();
         root.validate(this);
@@ -71,8 +88,8 @@ public class DataObjectConverterGUI extends LightweightGuiDescription {
         widgets.add(changeInputTypeButton);
         root.add(converterWhatToWhatLabel,5,0,4,1);
         widgets.add(converterWhatToWhatLabel);
-        root.add(fieldAssignmentList,0,1,10,8);
-        widgets.add(fieldAssignmentList);
+        root.add(fieldOverviewList,0,1,10,8);
+        widgets.add(fieldOverviewList);
     }
     private void buildTypeMenu(){
         removeAll();
@@ -87,6 +104,12 @@ public class DataObjectConverterGUI extends LightweightGuiDescription {
     }
     private void buildAssignMenu(){
         removeAll();
+        //currentFieldSelectorOutput = configuration.getOutputType().getName();
+        rebuildFieldSelectorList();
+        root.add(backToMainMenuButton,0,0,2,1);
+        widgets.add(backToMainMenuButton);
+        root.add(fieldSelectorList,0,1,10,8);
+        widgets.add(fieldSelectorList);
     }
     private void removeAll(){
         while (!widgets.isEmpty()){
@@ -97,26 +120,45 @@ public class DataObjectConverterGUI extends LightweightGuiDescription {
     //When the io types are changed
     private void rebuildAssignmentList(){
         System.out.println("changed");
+
+        //Rebuild main menu
         BiConsumer<String, AdapterListEntry> typeSelectorConfigurator = (String s, AdapterListEntry destination) -> {
             destination.outName.setText(new LiteralText(s));
             //Not done, but later use this
-            //destination.changeButton.setLabel(new LiteralText(configuration.getConnection(s)));
-            destination.changeButton.setLabel(new TranslatableText("gui.cpu_arch_mod.unassigned_conversion_field"));
+            destination.changeButton.setLabel(configuration.getReverseConnection(s));
         };
-        fieldAssignmentList = new WListPanel<>(new ArrayList<>(configuration.getOutputType().getRequiredTags().keySet()), AdapterListEntry::new, typeSelectorConfigurator);
-        fieldAssignmentList.setListItemHeight(18);
+        fieldOverviewList = new WListPanel<>(new ArrayList<>(configuration.getOutputType().getRequiredTags().keySet()), AdapterListEntry::new, typeSelectorConfigurator);
+        fieldOverviewList.setListItemHeight(18);
+    }
+
+    private void rebuildFieldSelectorList(){
+        //Rebuild assign menu
+        BiConsumer<String, DataObjectFieldEntry> assignMenuConfigurator = (String s, DataObjectFieldEntry destination) -> {
+            destination.fieldName.setText(new LiteralText(s));
+            destination.inName = s;
+        };
+        fieldSelectorList = new WListPanel<>(new ArrayList<>(configuration.getInputType().getRequiredTags().keySet()), DataObjectFieldEntry::new, assignMenuConfigurator);
+        fieldSelectorList.setListItemHeight(18);
     }
 
     //Assign screen
     private class DataObjectFieldEntry extends WPlainPanel{
         WLabel fieldName;
         WButton assign;
+        String inName;
         public DataObjectFieldEntry(){
             fieldName = new WLabel("null");
             add(fieldName,0,2,4*18,18);
-            assign = new WButton();
+            assign = new WButton(new TranslatableText("gui.cpu_arch_mod.select"));
             add(assign,5*18,0,4*18,18);
             this.setSize(10*18,18);
+            assign.setOnClick(() -> {
+                boolean sucess = configuration.connect(inName,currentFieldSelectorOutput);
+                System.out.println(sucess);
+                if (sucess){
+                    rebuildAssignmentList();
+                }
+            });
         }
     }
 
@@ -128,29 +170,38 @@ public class DataObjectConverterGUI extends LightweightGuiDescription {
             outName = new WLabel(new LiteralText("null"));
             add(outName,0,2,4*18,18);
             changeButton = new WButton(new TranslatableText("gui.cpu_arch_mod.unassigned_conversion_field"));
-            add(changeButton,5*18,0,4*18,18);
+            add(changeButton,4*18,0,4*18,18);
             this.setSize(10*18,18);
+            changeButton.setOnClick(new Runnable() {
+                @Override
+                public void run() {
+                    buildAssignMenu();
+                }
+            });
         }
     }
 
     //Type screen
     private class InputTypeEntry extends WPlainPanel{
         WLabel typeName;
-        WButton selectInput;
-        WButton selectOutput;
+        WColorButton selectInput;
+        WColorButton selectOutput;
         String typeNameString;
         public InputTypeEntry(){
             typeName = new WLabel("none");
             this.add(typeName,0, 2, 3*18, 18);
-            selectInput = new WButton(new TranslatableText("gui.cpu_arch_mod.select"));
+            selectInput = new WColorButton(new TranslatableText("gui.cpu_arch_mod.select"));
             this.add(selectInput,3*18-5,0,2*18,18);
-            selectOutput = new WButton(new TranslatableText("gui.cpu_arch_mod.select"));
+            selectOutput = new WColorButton(new TranslatableText("gui.cpu_arch_mod.select"));
             this.add(selectOutput,6*18-6,0,2*18,18);
 
             selectInput.setOnClick(new Runnable() {
                 @Override
                 public void run() {
                     configuration.setInputType(DataObjectType.getDataObjectTypeFromNameOrNull(typeNameString));
+                    selectInput.setColor(Color.GREEN.toRgb());
+                    lastInputTypeButton.setColor(0xE0E0E0);
+                    lastInputTypeButton = selectInput;
                     rebuildAssignmentList();
                 }
             });
@@ -159,6 +210,9 @@ public class DataObjectConverterGUI extends LightweightGuiDescription {
                 @Override
                 public void run() {
                     configuration.setOutputType(DataObjectType.getDataObjectTypeFromNameOrNull(typeNameString));
+                    selectOutput.setColor(Color.GREEN.toRgb());
+                    lastOutputTypeButton.setColor(0xE0E0E0);
+                    lastOutputTypeButton = selectOutput;
                     rebuildAssignmentList();
                 }
             });

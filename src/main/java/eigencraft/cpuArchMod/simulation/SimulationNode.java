@@ -1,7 +1,6 @@
 package eigencraft.cpuArchMod.simulation;
 
 import eigencraft.cpuArchMod.dataObject.DataObject;
-import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 
@@ -14,7 +13,7 @@ public abstract class SimulationNode{
     private static HashMap<String, Function<BlockPos,SimulationNode>> nodeTypeRegistry = new HashMap<>();
 
     HashSet<SimulationPipe> connectedPipes = new HashSet<>();
-    protected BlockPos position;
+    public BlockPos position;
     private HashSet<DataObject> ownMessagesBuffer1 = new HashSet<>();
     private HashSet<DataObject> ownMessagesBuffer2 = new HashSet<>();
 
@@ -55,10 +54,12 @@ public abstract class SimulationNode{
         //We need to collect the messages and sort out duplicates, for example if it is in an inner corner of a pipe(connected to two pipes, which are connect to each other)
         HashSet<DataObject> allMessages = new HashSet<>();
         for (SimulationPipe pipe:connectedPipes){
-            for (DataObject dataObject:pipe.getNewMessages()) {
-                //If not own message
-                if (!ownMessagesBuffer2.contains(dataObject)){
-                    allMessages.add(dataObject);
+            if (pipe instanceof SimulationMessageProvidingPipe){
+                for (Object dataObject : ((SimulationMessageProvidingPipe) pipe).getNewMessages()) {
+                    //If not own message
+                    if (!ownMessagesBuffer2.contains(dataObject)){
+                        allMessages.add((DataObject) dataObject);
+                    }
                 }
             }
         }

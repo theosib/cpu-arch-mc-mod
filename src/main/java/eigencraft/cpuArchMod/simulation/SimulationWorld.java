@@ -1,13 +1,14 @@
 package eigencraft.cpuArchMod.simulation;
 
+import eigencraft.cpuArchMod.simulation.storage.SaveFormatUtils;
+import eigencraft.cpuArchMod.simulation.storage.XMLChunkLoader;
+import eigencraft.cpuArchMod.simulation.storage.XMLChunkSaver;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -31,13 +32,13 @@ public class SimulationWorld {
         if (loadedChunks.containsKey(chunkPos)) return loadedChunks.get(chunkPos);
         System.out.println(String.format("Requested chunk %d, %d",chunkPos.x,chunkPos.z));
         //If saved
-        if (this.isChunkOnDisk(chunkPos)){
+        if (SaveFormatUtils.isChunkOnDisk(chunkPos,simulationSaveDirectory)){
             //Create empty chunk
             SimulationChunk newChunk = new SimulationChunk(chunkPos,this);
             //Mark chunk as loaded
             loadedChunks.put(chunkPos,newChunk);
             //Load the data
-            XMLChunkBuilder.load(newChunk,this,new File(simulationSaveDirectory,getSavePathForChunk(chunkPos)));
+            XMLChunkLoader.load(newChunk,this,SaveFormatUtils.getSavePathForChunk(chunkPos,simulationSaveDirectory));
             return newChunk;
         }
         // Create new, empty Chunk
@@ -53,7 +54,11 @@ public class SimulationWorld {
     }
 
     public void addPipe(BlockPos blockPos) {
-        this.getOrLoadChunk(new ChunkPos(blockPos)).addPipe(blockPos);
+        this.getOrLoadChunk(new ChunkPos(blockPos)).addPipe(new SimulationTransferPipe(blockPos),blockPos);
+    }
+
+    public void addSpecialPipe(SimulationPipe pipe, BlockPos pos){
+        this.getOrLoadChunk(new ChunkPos(pos)).addPipe(pipe,pos);
     }
 
     public void removePipe(BlockPos blockPos){
@@ -65,31 +70,15 @@ public class SimulationWorld {
     }
 
     private void saveChunkToDisk(ChunkPos pos,SimulationChunk chunk){
-        File chunkFile = new File(simulationSaveDirectory, getSavePathForChunk(pos));
         if (chunk.shouldSave()){
-            String data = chunk.save();
-            try {
-                FileWriter writer = new FileWriter(chunkFile);
-                writer.write(data);
-                writer.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            XMLChunkSaver.save(chunk,simulationSaveDirectory);
         } else {
             //Empty chunk
+            File chunkFile = SaveFormatUtils.getSavePathForChunk(chunk.chunkPos,simulationSaveDirectory);
             if (chunkFile.exists()){
                 chunkFile.delete();
             }
         }
-    }
-
-    private boolean isChunkOnDisk(ChunkPos pos){
-        File chunkFile =  new File(simulationSaveDirectory,getSavePathForChunk(pos));
-        return chunkFile.isFile();
-    }
-
-    private String getSavePathForChunk(ChunkPos pos){
-        return String.format("x%dz%d.xml",pos.x,pos.z);
     }
 
     public void tick(){

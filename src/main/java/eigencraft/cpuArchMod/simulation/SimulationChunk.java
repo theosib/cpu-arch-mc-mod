@@ -6,6 +6,10 @@ import net.minecraft.util.math.ChunkPos;
 import java.util.*;
 
 public class SimulationChunk {
+    public ChunkPos getChunkPos() {
+        return chunkPos;
+    }
+
     ChunkPos chunkPos;
 
     public SimulationChunk(ChunkPos chunkPos, SimulationWorld world) {
@@ -16,20 +20,6 @@ public class SimulationChunk {
     SimulationWorld world;
     private HashMap<Integer,SimulationNode> nodes = new HashMap<>();
     private HashMap<Integer, SimulationPipe> pipes = new HashMap<>();
-
-    public String save(){
-        StringBuilder xmlString = new StringBuilder();
-        xmlString.append("<chunk>");
-        for (SimulationNode node:nodes.values()) {
-            xmlString.append(String.format("<node x='%d' y='%d' z='%d' type='%s' />",node.position.getX(),node.position.getY(),node.position.getZ(),node.getClass().getSimpleName()));
-        }
-        for (SimulationPipe pipe:pipes.values()) {
-            xmlString.append(String.format("<pipe x='%d' y='%d' z='%d' />",pipe.position.getX(),pipe.position.getY(),pipe.position.getZ()));
-        }
-
-        xmlString.append("</chunk>");
-        return xmlString.toString();
-    }
 
     public boolean shouldSave(){
         return (!nodes.isEmpty())||(!pipes.isEmpty());
@@ -61,8 +51,7 @@ public class SimulationChunk {
         }
     }
 
-    public void addPipe(BlockPos blockPos){
-        SimulationPipe pipe = new SimulationPipe(blockPos);
+    public void addPipe(SimulationPipe pipe, BlockPos blockPos){
         pipes.put(blockPos.hashCode(),pipe);
 
         //Load needed neighbors
@@ -129,7 +118,7 @@ public class SimulationChunk {
         }
     }
 
-    private void connectPipeToNodeFromPos(SimulationPipe pipe,BlockPos nodePos){
+    private void connectPipeToNodeFromPos(SimulationPipe pipe, BlockPos nodePos){
         if (nodes.containsKey(nodePos.hashCode())){
             nodes.get(nodePos.hashCode()).addPipe(pipe);
         }
@@ -182,5 +171,11 @@ public class SimulationChunk {
         return null;
     }
 
+    public Collection<SimulationNode> getNodes() {
+        return nodes.values();
+    }
 
+    public Collection<SimulationPipe> getPipes() {
+        return pipes.values();
+    }
 }

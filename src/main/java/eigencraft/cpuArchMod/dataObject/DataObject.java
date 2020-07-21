@@ -33,6 +33,19 @@ public class DataObject {
         dataStorage = fixNbtCompoundAsDataObject(src);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DataObject that = (DataObject) o;
+        return dataStorage.equals(that.dataStorage);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dataStorage);
+    }
+
     public String getType(){
         return dataStorage.getString("type");
     }
@@ -128,5 +141,9 @@ public class DataObject {
 
     public int[] getIntArray(String key) {
         return dataStorage.getIntArray(key);
+    }
+
+    public boolean matchType(DataObjectType toCompare) {
+        return getType().equals(toCompare.getName());
     }
 }
