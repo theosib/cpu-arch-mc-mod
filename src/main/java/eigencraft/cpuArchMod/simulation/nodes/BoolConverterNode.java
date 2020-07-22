@@ -1,6 +1,8 @@
 package eigencraft.cpuArchMod.simulation.nodes;
 
 import eigencraft.cpuArchMod.dataObject.DataObject;
+import eigencraft.cpuArchMod.dataObject.DataObjectConverter;
+import eigencraft.cpuArchMod.dataObject.DataObjectConverterRegistry;
 import eigencraft.cpuArchMod.dataObject.DataObjectTypes;
 import eigencraft.cpuArchMod.simulation.SimulationIOManager;
 import eigencraft.cpuArchMod.simulation.SimulationNode;
@@ -14,33 +16,31 @@ public class BoolConverterNode extends SimulationNode {
 
     @Override
     public void process(DataObject inMessages, SimulationIOManager ioManager) {
-        if (inMessages.matchType(DataObjectTypes.INT_TYPE)){
-            if (inMessages.getInt("data")==0){
-                publish(DataObjectTypes.FALSE_BOOLEAN);
-            } else {
-                publish(DataObjectTypes.TRUE_BOOLEAN);
-            }
-        } else if (inMessages.matchType(DataObjectTypes.BYTE_TYPE)){
-            if (inMessages.getByte("data")==0){
-                publish(DataObjectTypes.FALSE_BOOLEAN);
-            } else {
-                publish(DataObjectTypes.TRUE_BOOLEAN);
-            }
-        } else if (inMessages.matchType(DataObjectTypes.BOOLEAN_TYPE)){
-            publish(inMessages);
-            return;
-        } else if (inMessages.matchType(DataObjectTypes.INT_ARRAY_TYPE)){
-            if (inMessages.getIntArray("data")[0]==0){
-                publish(DataObjectTypes.FALSE_BOOLEAN);
-            } else {
-                publish(DataObjectTypes.TRUE_BOOLEAN);
-            }
-        } else if (inMessages.matchType(DataObjectTypes.BYTE_ARRAY_TYPE)){
-            if (inMessages.getByteArray("data")[0]==0){
-                publish(DataObjectTypes.FALSE_BOOLEAN);
-            } else {
-                publish(DataObjectTypes.TRUE_BOOLEAN);
-            }
+        publish(DataObjectConverterRegistry.convert(inMessages, DataObjectTypes.BOOLEAN_TYPE));
+    }
+
+    public static class ByteToBoolConverter extends DataObjectConverter {
+        @Override
+        public DataObject convert(DataObject in) {
+            return (in.getByte("data")==0)?DataObjectTypes.FALSE_BOOLEAN:DataObjectTypes.TRUE_BOOLEAN;
+        }
+    }
+    public static class IntToBoolConverter extends DataObjectConverter {
+        @Override
+        public DataObject convert(DataObject in) {
+            return (in.getInt("data")==0)?DataObjectTypes.FALSE_BOOLEAN:DataObjectTypes.TRUE_BOOLEAN;
+        }
+    }
+    public static class ByteArrayToBoolConverter extends DataObjectConverter {
+        @Override
+        public DataObject convert(DataObject in) {
+            return (in.getByteArray("data")[0]==0)?DataObjectTypes.FALSE_BOOLEAN:DataObjectTypes.TRUE_BOOLEAN;
+        }
+    }
+    public static class IntArrayToBoolConverter extends DataObjectConverter {
+        @Override
+        public DataObject convert(DataObject in) {
+            return (in.getIntArray("data")[0]==0)?DataObjectTypes.FALSE_BOOLEAN:DataObjectTypes.TRUE_BOOLEAN;
         }
     }
 

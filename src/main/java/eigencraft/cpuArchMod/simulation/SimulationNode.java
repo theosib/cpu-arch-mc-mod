@@ -10,12 +10,12 @@ import java.util.function.Function;
 
 public abstract class SimulationNode{
 
-    private static HashMap<String, Function<BlockPos,SimulationNode>> nodeTypeRegistry = new HashMap<>();
+    private static final HashMap<String, Function<BlockPos,SimulationNode>> nodeTypeRegistry = new HashMap<>();
 
     HashSet<SimulationPipe> connectedPipes = new HashSet<>();
     public BlockPos position;
-    private HashSet<DataObject> ownMessagesBuffer1 = new HashSet<>();
-    private HashSet<DataObject> ownMessagesBuffer2 = new HashSet<>();
+    private final HashSet<DataObject> ownMessagesBuffer1 = new HashSet<>();
+    private final HashSet<DataObject> ownMessagesBuffer2 = new HashSet<>();
 
     public SimulationNode(BlockPos position){
         this.position = position;
@@ -26,7 +26,7 @@ public abstract class SimulationNode{
     }
 
     public static Function<BlockPos,SimulationNode> getFromName(String name){
-        return (nodeTypeRegistry.containsKey(name))?nodeTypeRegistry.get(name):null;
+        return nodeTypeRegistry.getOrDefault(name, null);
     }
 
     public abstract void process(DataObject inMessages,SimulationIOManager ioManager);
@@ -68,8 +68,8 @@ public abstract class SimulationNode{
         }
     }
 
-    public boolean removePipe(SimulationPipe toRemove){
-        return connectedPipes.remove(toRemove);
+    public void removePipe(SimulationPipe toRemove){
+        connectedPipes.remove(toRemove);
     }
     public void onUse(SimulationIOManager ioManager, PlayerEntity player){};
 }

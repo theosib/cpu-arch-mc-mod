@@ -1,5 +1,6 @@
 package eigencraft.cpuArchMod.dataObject;
 
+import eigencraft.cpuArchMod.simulation.nodes.BoolConverterNode;
 import eigencraft.cpuArchMod.simulation.nodes.ByteConverterNode;
 import eigencraft.cpuArchMod.simulation.nodes.IntConverterNode;
 import net.fabricmc.fabric.api.util.NbtType;
@@ -48,6 +49,11 @@ public class DataObjectTypes {
         DataObjectConverterRegistry.addConverter(BYTE_ARRAY_TYPE,BYTE_TYPE, new ByteConverterNode.ByteArrayToByteConverter());
         DataObjectConverterRegistry.addConverter(INT_ARRAY_TYPE,BYTE_TYPE, new ByteConverterNode.IntArrayToByteConverter());
         DataObjectConverterRegistry.addConverter(BOOLEAN_TYPE,BYTE_TYPE, new ByteConverterNode.BoolToByteConverter());
+
+        DataObjectConverterRegistry.addConverter(INT_TYPE,BOOLEAN_TYPE, new BoolConverterNode.IntToBoolConverter());
+        DataObjectConverterRegistry.addConverter(BYTE_ARRAY_TYPE,BOOLEAN_TYPE, new BoolConverterNode.ByteArrayToBoolConverter());
+        DataObjectConverterRegistry.addConverter(INT_ARRAY_TYPE,BOOLEAN_TYPE, new BoolConverterNode.IntArrayToBoolConverter());
+        DataObjectConverterRegistry.addConverter(BYTE_TYPE,BOOLEAN_TYPE, new BoolConverterNode.ByteToBoolConverter());
     }
 
     public static boolean readBoolean(DataObject booleanDataObject){

@@ -53,11 +53,7 @@ public class SimulationWorld {
         this.getOrLoadChunk(new ChunkPos(pos)).addNode(node,pos);
     }
 
-    public void addPipe(BlockPos blockPos) {
-        this.getOrLoadChunk(new ChunkPos(blockPos)).addPipe(new SimulationTransferPipe(blockPos),blockPos);
-    }
-
-    public void addSpecialPipe(SimulationPipe pipe, BlockPos pos){
+    public void addPipe(SimulationPipe pipe, BlockPos pos){
         this.getOrLoadChunk(new ChunkPos(pos)).addPipe(pipe,pos);
     }
 

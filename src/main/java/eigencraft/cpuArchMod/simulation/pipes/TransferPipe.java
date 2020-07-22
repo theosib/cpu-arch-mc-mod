@@ -1,12 +1,13 @@
-package eigencraft.cpuArchMod.simulation;
+package eigencraft.cpuArchMod.simulation.pipes;
 
 import eigencraft.cpuArchMod.dataObject.DataObject;
+import eigencraft.cpuArchMod.simulation.SimulationPipe;
 import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.*;
 
-public class SimulationTransferPipe implements SimulationPipe{
+public class TransferPipe implements SimulationPipe {
 
     BlockPos position;
     private final List<SimulationPipe> connectedPipes = new ArrayList<>();
@@ -16,7 +17,7 @@ public class SimulationTransferPipe implements SimulationPipe{
      * Creates a new pipe.
      * @param position the position the pipe is located at
      */
-    public SimulationTransferPipe(BlockPos position){
+    public TransferPipe(BlockPos position){
         this.position = position;
     }
 
@@ -53,7 +54,7 @@ public class SimulationTransferPipe implements SimulationPipe{
      * @param dataObject
      * @param src stop backTracing
      */
-    public void interPipePublish(DataObject dataObject, SimulationTransferPipe src) {
+    public void interPipePublish(DataObject dataObject, TransferPipe src) {
         if (!loopBlocker){
             loopBlocker = true;
             for (SimulationPipe pipe : connectedPipes) {

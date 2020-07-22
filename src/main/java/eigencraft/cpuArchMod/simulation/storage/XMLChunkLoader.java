@@ -1,6 +1,8 @@
 package eigencraft.cpuArchMod.simulation.storage;
 
 import eigencraft.cpuArchMod.simulation.*;
+import eigencraft.cpuArchMod.simulation.pipes.EndPipe;
+import eigencraft.cpuArchMod.simulation.pipes.TransferPipe;
 import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.LogManager;
 import org.xml.sax.Attributes;
@@ -37,30 +39,26 @@ public class XMLChunkLoader extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        if (qName.equalsIgnoreCase("chunk")){
-            int version = Integer.parseInt(attributes.getValue("version"));
-            if (version>SaveFormatUtils.getVersion()){
-                LogManager.getLogger().warn("Found simulation chunk from newer mod version!");
-            } else if (version<SaveFormatUtils.getVersion()){
-                //TODO upgrade system?
-                LogManager.getLogger().warn("Found simulation chunk from older mod version!");
-            }
-        } else if (qName.equalsIgnoreCase("node")){
-            BlockPos nodePos = new BlockPos(Integer.parseInt(attributes.getValue("x")),Integer.parseInt(attributes.getValue("y")),Integer.parseInt(attributes.getValue("z")));
-            SimulationNode node = SimulationNode.getFromName(attributes.getValue("type")).apply(nodePos);
-            chunk.addNode(node,nodePos);
-        } else if (qName.equalsIgnoreCase("pipe")){
-            BlockPos pipePos = new BlockPos(Integer.parseInt(attributes.getValue("x")),Integer.parseInt(attributes.getValue("y")),Integer.parseInt(attributes.getValue("z")));
-            switch (attributes.getValue("type")) {
-                case "end_pipe":{
-                    chunk.addPipe(new SimulationEndPipe(pipePos), pipePos);
-                    break;
+        try {
+            if (qName.equalsIgnoreCase("chunk")){
+                int version = Integer.parseInt(attributes.getValue("version"));
+                if (version > SaveFormatUtils.getVersion()){
+                    LogManager.getLogger().warn("Found simulation chunk from newer mod version!");
+                } else if (version < SaveFormatUtils.getVersion()){
+                    //TODO upgrade system?
+                    LogManager.getLogger().warn(String.format("Found simulation chunk from older mod version! Found: %d, Mod: %d",version,SaveFormatUtils.getVersion()));
                 }
-                case "transfer_pipe":{
-                    chunk.addPipe(new SimulationTransferPipe(pipePos), pipePos);
-                    break;
-                }
+            } else if (qName.equalsIgnoreCase("node")){
+                BlockPos nodePos = new BlockPos(Integer.parseInt(attributes.getValue("x")), Integer.parseInt(attributes.getValue("y")), Integer.parseInt(attributes.getValue("z")));
+                SimulationNode node = SimulationNode.getFromName(attributes.getValue("type")).apply(nodePos);
+                chunk.addNode(node, nodePos);
+            } else if (qName.equalsIgnoreCase("pipe")){
+                BlockPos pipePos = new BlockPos(Integer.parseInt(attributes.getValue("x")), Integer.parseInt(attributes.getValue("y")), Integer.parseInt(attributes.getValue("z")));
+                SimulationPipe pipe = SimulationPipe.getFromName(attributes.getValue("type")).apply(pipePos);
+                chunk.addPipe(pipe, pipePos);
             }
+        } catch (Exception e){
+            LogManager.getLogger().error("Failed to parse simulation chunk element");
         }
     }
 }

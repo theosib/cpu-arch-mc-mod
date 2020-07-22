@@ -5,7 +5,7 @@ import net.minecraft.util.math.ChunkPos;
 import java.io.File;
 
 public class SaveFormatUtils {
-    private static final int version = 0;
+    private static final int version = 1;
 
     public static int getVersion() {
         return version;

@@ -16,7 +16,7 @@ public class XMLChunkSaver {
             xmlString.append(String.format("<node x='%d' y='%d' z='%d' type='%s' />",node.position.getX(),node.position.getY(),node.position.getZ(),node.getClass().getSimpleName()));
         }
         for (SimulationPipe pipe:chunk.getPipes()) {
-            xmlString.append(String.format("<pipe x='%d' y='%d' z='%d' type='%s'/>",pipe.getPos().getX(),pipe.getPos().getY(),pipe.getPos().getZ(),pipe.getTypeName()));
+            xmlString.append(String.format("<pipe x='%d' y='%d' z='%d' type='%s'/>",pipe.getPos().getX(),pipe.getPos().getY(),pipe.getPos().getZ(),pipe.getClass().getSimpleName()));
         }
 
         xmlString.append("</chunk>");

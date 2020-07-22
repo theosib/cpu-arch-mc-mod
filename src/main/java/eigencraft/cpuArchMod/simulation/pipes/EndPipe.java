@@ -1,25 +1,25 @@
-package eigencraft.cpuArchMod.simulation;
+package eigencraft.cpuArchMod.simulation.pipes;
 
 import eigencraft.cpuArchMod.dataObject.DataObject;
+import eigencraft.cpuArchMod.simulation.SimulationMessageProvidingPipe;
+import eigencraft.cpuArchMod.simulation.SimulationPipe;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 
-public class SimulationEndPipe implements SimulationMessageProvidingPipe {
+public class EndPipe implements SimulationMessageProvidingPipe {
 
     protected HashSet<DataObject> messages = new HashSet<>();
     private HashSet<DataObject> distributionMessages = new HashSet<>();
     BlockPos position;
 
-    public SimulationEndPipe(BlockPos position) {
+    public EndPipe(BlockPos position) {
         this.position = position;
     }
 
     @Override
-    public void interPipePublish(DataObject dataObject, SimulationTransferPipe src) {
+    public void interPipePublish(DataObject dataObject, TransferPipe src) {
         //Only store it, but don't redistribute it.
         messages.add(dataObject);
     }
@@ -37,7 +37,7 @@ public class SimulationEndPipe implements SimulationMessageProvidingPipe {
     @Override
     public void publish(DataObject dataObject) {
         //Only store it, but don't redistribute it.
-        messages.add(dataObject);
+        //messages.add(dataObject);
     }
 
     @Override
