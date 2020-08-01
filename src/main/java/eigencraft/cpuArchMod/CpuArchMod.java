@@ -2,11 +2,12 @@ package eigencraft.cpuArchMod;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import eigencraft.cpuArchMod.blocks.ColoredPipeContainerBlock;
+import eigencraft.cpuArchMod.blocks.PipeContainerBlock;
 import eigencraft.cpuArchMod.dataObject.DataObject;
 import eigencraft.cpuArchMod.dataObject.DataObjectType;
 import eigencraft.cpuArchMod.dataObject.DataObjectTypes;
 import eigencraft.cpuArchMod.simulation.*;
-import eigencraft.cpuArchMod.blocks.PipeContainerBlock;
 import eigencraft.cpuArchMod.blocks.NodeContainerBlock;
 import eigencraft.cpuArchMod.items.DebugDataObjectItem;
 import eigencraft.cpuArchMod.simulation.nodes.*;
@@ -37,7 +38,6 @@ public class CpuArchMod implements ModInitializer, ClientModInitializer {
 	public static final String MODID = "cpu_arch_mod";
 
 	public static final Identifier DATAOBJECT_GUI_SAVE_C2S_PACKET = new Identifier(MODID,"dataobject.save_on_item");
-	public static final Identifier CONVERTER_GUI_OPEN_S2C_PACKET = new Identifier(MODID,"converter_node.open_gui");
 
 	public static final ItemGroup CPU_ARCH_MOD_ITEM_GROUP = FabricItemGroupBuilder.create(new Identifier(MODID,"mod_creative_item_group")).build();
 
@@ -97,12 +97,6 @@ public class CpuArchMod implements ModInitializer, ClientModInitializer {
 
 		//Register items
 		Registry.register(Registry.ITEM, new Identifier(MODID, "data_object_disk_item"), DEBUG_DATA_OBJECT_ITEM);
-		//Registry.register(Registry.ITEM, new Identifier(MODID, "data_pipe_item"), new BlockItem(DATA_PIPE_BLOCK, new Item.Settings().group(CPU_ARCH_MOD_ITEM_GROUP)));
-		//Registry.register(Registry.ITEM, new Identifier(MODID, "data_pipe_end_item"), new BlockItem(DATA_PIPE_END_BLOCK, new Item.Settings().group(CPU_ARCH_MOD_ITEM_GROUP)));
-
-		//Register blocks
-		//Registry.register(Registry.BLOCK,new Identifier(MODID,"data_pipe"),DATA_PIPE_BLOCK);
-		//Registry.register(Registry.BLOCK,new Identifier(MODID,"data_pipe_end"),DATA_PIPE_END_BLOCK);
 
 		//Register nodes
 		NodeContainerBlock.create(IONode.class,IONode::new);
@@ -112,7 +106,8 @@ public class CpuArchMod implements ModInitializer, ClientModInitializer {
 		NodeContainerBlock.create(ByteArrayConverterNode.class, ByteArrayConverterNode::new);
 		NodeContainerBlock.create(BoolConverterNode.class, BoolConverterNode::new);
 
-		PipeContainerBlock.create(TransferPipe.class, TransferPipe::new);
+		//Registaer pipes
+		ColoredPipeContainerBlock.create(TransferPipe.class, TransferPipe::new);
 		PipeContainerBlock.create(EndPipe.class, EndPipe::new);
 
 

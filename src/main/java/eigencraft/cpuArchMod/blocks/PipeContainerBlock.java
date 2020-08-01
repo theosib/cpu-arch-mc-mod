@@ -21,9 +21,9 @@ import static eigencraft.cpuArchMod.CpuArchMod.CPU_ARCH_MOD_ITEM_GROUP;
 import static eigencraft.cpuArchMod.CpuArchMod.MODID;
 
 public class PipeContainerBlock extends Block {
-    private static final Settings blockSettings = FabricBlockSettings.of(Material.METAL).breakByHand(true).hardness((float)Math.PI).build();
+    protected static final Settings blockSettings = FabricBlockSettings.of(Material.METAL).breakByHand(true).hardness((float)Math.PI).build();
 
-    private Function<BlockPos,SimulationPipe> constructor;
+    protected Function<BlockPos,SimulationPipe> constructor;
 
     public static void create(Class type, Function<BlockPos, SimulationPipe> constructor){
         SimulationPipe.register(type.getSimpleName(),constructor);
@@ -32,7 +32,7 @@ public class PipeContainerBlock extends Block {
         Registry.register(Registry.BLOCK,new Identifier(MODID,type.getSimpleName().toLowerCase()),newNodeContainerBlock);
     }
 
-    private PipeContainerBlock(Settings settings, Function<BlockPos, SimulationPipe> constructor) {
+    protected PipeContainerBlock(Settings settings, Function<BlockPos, SimulationPipe> constructor) {
         super(settings);
         this.constructor = constructor;
     }

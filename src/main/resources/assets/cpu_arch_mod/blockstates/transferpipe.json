@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "color=white": { "model": "cpu_arch_mod:block/transferpipe" },
+    "color=purple": { "model": "cpu_arch_mod:block/transferpipe" },
+    "color=light_blue": { "model": "cpu_arch_mod:block/transferpipe" },
+    "color=yellow": { "model": "cpu_arch_mod:block/transferpipe" },
+    "color=red": { "model": "cpu_arch_mod:block/transferpipe" },
+    "color=green": { "model": "cpu_arch_mod:block/transferpipe" },
+    "color=cyan": { "model": "cpu_arch_mod:block/transferpipe" },
+    "color=light_gray": { "model": "cpu_arch_mod:block/transferpipe" },
+    "color=gray": { "model": "cpu_arch_mod:block/transferpipe" },
+    "color=brown": { "model": "cpu_arch_mod:block/transferpipe" },
+    "color=blue": { "model": "cpu_arch_mod:block/transferpipe" },
+    "color=magenta": { "model": "cpu_arch_mod:block/transferpipe" },
+    "color=pink": { "model": "cpu_arch_mod:block/transferpipe" },
+    "color=orange": { "model": "cpu_arch_mod:block/transferpipe" },
+    "color=lime": { "model": "cpu_arch_mod:block/transferpipe" },
+    "color=black": { "model": "cpu_arch_mod:block/transferpipe" }
+  }
+}
