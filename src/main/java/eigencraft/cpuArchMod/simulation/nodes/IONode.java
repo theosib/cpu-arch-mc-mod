@@ -20,6 +20,7 @@ public class IONode extends SimulationNode {
 
     @Override
     public void process(PipeMessage inMessage, SimulationIOManager ioManager) {
+        System.out.println(inMessage.getLane());
         ioManager.addMainTickRunnable(new SimulationIOManager.MinecraftServerRunnable() {
             @Override
             public void run(MinecraftServer server) {

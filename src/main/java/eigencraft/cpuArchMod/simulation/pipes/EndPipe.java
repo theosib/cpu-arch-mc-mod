@@ -1,28 +1,28 @@
 package eigencraft.cpuArchMod.simulation.pipes;
 
 import eigencraft.cpuArchMod.dataObject.DataObject;
-import eigencraft.cpuArchMod.simulation.PipeMessage;
-import eigencraft.cpuArchMod.simulation.SimulationMessageProvidingPipe;
-import eigencraft.cpuArchMod.simulation.SimulationPipe;
+import eigencraft.cpuArchMod.simulation.*;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Collection;
 import java.util.HashSet;
 
-public class EndPipe implements SimulationMessageProvidingPipe {
+public class EndPipe implements SimulationMessageProvidingPipe{
 
     protected HashSet<PipeMessage> messages = new HashSet<>();
     private HashSet<PipeMessage> distributionMessages = new HashSet<>();
-    BlockPos position;
+    SimulationPipeContext context;
 
-    public EndPipe(BlockPos position) {
-        this.position = position;
+    public EndPipe(SimulationPipeContext context) {
+       this.context = context;
     }
 
     @Override
-    public void interPipePublish(PipeMessage dataObject) {
+    public void interPipePublish(PipeMessage message) {
         //Only store it, but don't redistribute it.
-        messages.add(dataObject);
+        DyeColor color = context.getColor();
+        messages.add(new PipeMessage(message.getDataObject(), (color==null)?message.getLane():PipeLane.convert(color)));
     }
 
     @Override
@@ -48,8 +48,8 @@ public class EndPipe implements SimulationMessageProvidingPipe {
     }
 
     @Override
-    public BlockPos getPos() {
-        return position;
+    public SimulationPipeContext getContext() {
+        return context;
     }
 
     @Override

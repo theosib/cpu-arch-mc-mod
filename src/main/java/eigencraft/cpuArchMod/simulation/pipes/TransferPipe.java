@@ -3,6 +3,7 @@ package eigencraft.cpuArchMod.simulation.pipes;
 import eigencraft.cpuArchMod.dataObject.DataObject;
 import eigencraft.cpuArchMod.simulation.PipeMessage;
 import eigencraft.cpuArchMod.simulation.SimulationPipe;
+import eigencraft.cpuArchMod.simulation.SimulationPipeContext;
 import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.LogManager;
 
@@ -10,16 +11,16 @@ import java.util.*;
 
 public class TransferPipe implements SimulationPipe {
 
-    BlockPos position;
+    SimulationPipeContext context;
     private final List<SimulationPipe> connectedPipes = new ArrayList<>();
     private boolean loopBlocker = false;
 
     /***
      * Creates a new pipe.
-     * @param position the position the pipe is located at
+     * @param context informations about the pipe
      */
-    public TransferPipe(BlockPos position){
-        this.position = position;
+    public TransferPipe(SimulationPipeContext context){
+        this.context = context;
     }
 
     /***
@@ -65,16 +66,16 @@ public class TransferPipe implements SimulationPipe {
                     LogManager.getLogger().info("Too long pipe!");
                 }
             }
+            loopBlocker = false;
         }
-        loopBlocker = false;
     }
 
     public void tick(){
     }
 
     @Override
-    public BlockPos getPos() {
-        return position;
+    public SimulationPipeContext getContext() {
+        return context;
     }
 
     @Override

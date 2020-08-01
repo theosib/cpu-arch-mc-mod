@@ -1,5 +1,20 @@
 {
   "variants": {
-    "": { "model": "cpu_arch_mod:block/endpipe" }
+    "color=white": { "model": "cpu_arch_mod:block/endpipe" },
+    "color=purple": { "model": "cpu_arch_mod:block/endpipe" },
+    "color=light_blue": { "model": "cpu_arch_mod:block/endpipe" },
+    "color=yellow": { "model": "cpu_arch_mod:block/endpipe" },
+    "color=red": { "model": "cpu_arch_mod:block/endpipe" },
+    "color=green": { "model": "cpu_arch_mod:block/endpipe" },
+    "color=cyan": { "model": "cpu_arch_mod:block/endpipe" },
+    "color=light_gray": { "model": "cpu_arch_mod:block/endpipe" },
+    "color=gray": { "model": "cpu_arch_mod:block/endpipe" },
+    "color=brown": { "model": "cpu_arch_mod:block/endpipe" },
+    "color=blue": { "model": "cpu_arch_mod:block/endpipe" },
+    "color=magenta": { "model": "cpu_arch_mod:block/endpipe" },
+    "color=pink": { "model": "cpu_arch_mod:block/endpipe" },
+    "color=orange": { "model": "cpu_arch_mod:block/endpipe" },
+    "color=lime": { "model": "cpu_arch_mod:block/endpipe" },
+    "color=black": { "model": "cpu_arch_mod:block/endpipe" }
   }
 }

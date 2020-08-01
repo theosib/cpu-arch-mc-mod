@@ -1,8 +1,8 @@
 package eigencraft.cpuArchMod.simulation;
 
-import eigencraft.cpuArchMod.simulation.storage.SaveFormatUtils;
-import eigencraft.cpuArchMod.simulation.storage.XMLChunkLoader;
-import eigencraft.cpuArchMod.simulation.storage.XMLChunkSaver;
+import eigencraft.cpuArchMod.simulation.storage.SaveFormat;
+import eigencraft.cpuArchMod.simulation.storage.JSONChunkLoader;
+import eigencraft.cpuArchMod.simulation.storage.JSONChunkSaver;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -32,13 +32,13 @@ public class SimulationWorld {
         if (loadedChunks.containsKey(chunkPos)) return loadedChunks.get(chunkPos);
         System.out.println(String.format("Requested chunk %d, %d",chunkPos.x,chunkPos.z));
         //If saved
-        if (SaveFormatUtils.isChunkOnDisk(chunkPos,simulationSaveDirectory)){
+        if (SaveFormat.isChunkOnDisk(chunkPos,simulationSaveDirectory)){
             //Create empty chunk
             SimulationChunk newChunk = new SimulationChunk(chunkPos,this);
             //Mark chunk as loaded
             loadedChunks.put(chunkPos,newChunk);
             //Load the data
-            XMLChunkLoader.load(newChunk,this,SaveFormatUtils.getSavePathForChunk(chunkPos,simulationSaveDirectory));
+            JSONChunkLoader.load(newChunk,this, SaveFormat.getSavePathForChunk(chunkPos,simulationSaveDirectory));
             return newChunk;
         }
         // Create new, empty Chunk
@@ -67,10 +67,10 @@ public class SimulationWorld {
 
     private void saveChunkToDisk(ChunkPos pos,SimulationChunk chunk){
         if (chunk.shouldSave()){
-            XMLChunkSaver.save(chunk,simulationSaveDirectory);
+            JSONChunkSaver.save(chunk,simulationSaveDirectory);
         } else {
             //Empty chunk
-            File chunkFile = SaveFormatUtils.getSavePathForChunk(chunk.chunkPos,simulationSaveDirectory);
+            File chunkFile = SaveFormat.getSavePathForChunk(chunk.chunkPos,simulationSaveDirectory);
             if (chunkFile.exists()){
                 chunkFile.delete();
             }

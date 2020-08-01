@@ -13,6 +13,8 @@ import eigencraft.cpuArchMod.items.DebugDataObjectItem;
 import eigencraft.cpuArchMod.simulation.nodes.*;
 import eigencraft.cpuArchMod.simulation.pipes.EndPipe;
 import eigencraft.cpuArchMod.simulation.pipes.TransferPipe;
+import eigencraft.cpuArchMod.simulation.storage.PipeContextDeserializer;
+import eigencraft.cpuArchMod.simulation.storage.PipeContextSerializer;
 import eigencraft.cpuArchMod.util.GsonDataObjectDeserializer;
 import eigencraft.cpuArchMod.util.GsonDataObjectSerializer;
 import net.fabricmc.api.ClientModInitializer;
@@ -59,6 +61,9 @@ public class CpuArchMod implements ModInitializer, ClientModInitializer {
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.registerTypeAdapter(DataObject.class,new GsonDataObjectSerializer());
 		gsonBuilder.registerTypeAdapter(DataObject.class,new GsonDataObjectDeserializer());
+		gsonBuilder.registerTypeAdapter(SimulationPipeContext.class,new PipeContextSerializer());
+		gsonBuilder.registerTypeAdapter(SimulationPipeContext.class,new PipeContextDeserializer());
+		gsonBuilder.serializeNulls();
 		GSON = gsonBuilder.create();
 
 		//We need to start the simulation thread for every dimension
@@ -107,8 +112,8 @@ public class CpuArchMod implements ModInitializer, ClientModInitializer {
 		NodeContainerBlock.create(BoolConverterNode.class, BoolConverterNode::new);
 
 		//Registaer pipes
-		ColoredPipeContainerBlock.create(TransferPipe.class, TransferPipe::new);
-		PipeContainerBlock.create(EndPipe.class, EndPipe::new);
+		ColoredPipeContainerBlock.create(EndPipe.class, EndPipe::new);
+		PipeContainerBlock.create(TransferPipe.class, TransferPipe::new);
 
 
 		//Register packages

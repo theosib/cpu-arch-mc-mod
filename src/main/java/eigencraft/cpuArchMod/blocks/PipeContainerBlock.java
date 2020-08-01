@@ -23,18 +23,22 @@ import static eigencraft.cpuArchMod.CpuArchMod.MODID;
 public class PipeContainerBlock extends Block {
     protected static final Settings blockSettings = FabricBlockSettings.of(Material.METAL).breakByHand(true).hardness((float)Math.PI).build();
 
-    protected Function<BlockPos,SimulationPipe> constructor;
+    protected Function<SimulationPipeContext,SimulationPipe> constructor;
 
-    public static void create(Class type, Function<BlockPos, SimulationPipe> constructor){
+    public static void create(Class type, Function<SimulationPipeContext, SimulationPipe> constructor){
         SimulationPipe.register(type.getSimpleName(),constructor);
-        PipeContainerBlock newNodeContainerBlock = new PipeContainerBlock(blockSettings,constructor);
-        Registry.register(Registry.ITEM, new Identifier(MODID, type.getSimpleName().toLowerCase()), new BlockItem(newNodeContainerBlock, new Item.Settings().group(CPU_ARCH_MOD_ITEM_GROUP)));
-        Registry.register(Registry.BLOCK,new Identifier(MODID,type.getSimpleName().toLowerCase()),newNodeContainerBlock);
+        PipeContainerBlock newPipeContainerBlock = new PipeContainerBlock(blockSettings,constructor);
+        Registry.register(Registry.ITEM, new Identifier(MODID, type.getSimpleName().toLowerCase()), new BlockItem(newPipeContainerBlock, new Item.Settings().group(CPU_ARCH_MOD_ITEM_GROUP)));
+        Registry.register(Registry.BLOCK,new Identifier(MODID,type.getSimpleName().toLowerCase()),newPipeContainerBlock);
     }
 
-    protected PipeContainerBlock(Settings settings, Function<BlockPos, SimulationPipe> constructor) {
+    protected PipeContainerBlock(Settings settings, Function<SimulationPipeContext, SimulationPipe> constructor) {
         super(settings);
         this.constructor = constructor;
+    }
+
+    protected SimulationPipeContext buildContext(BlockState state,BlockPos pos){
+        return new SimulationPipeContext().setPosition(pos);
     }
 
     @Override
@@ -62,7 +66,7 @@ public class PipeContainerBlock extends Block {
                 @Override
                 public void run(SimulationWorld simulationWorld) {
                     //In the simulation thread, add the pipe
-                    simulationWorld.addPipe(constructor.apply(pos),pos);
+                    simulationWorld.addPipe(constructor.apply(buildContext(state,pos)),pos);
                 }
             });
         }
