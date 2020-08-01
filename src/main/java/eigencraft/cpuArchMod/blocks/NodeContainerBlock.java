@@ -2,10 +2,7 @@ package eigencraft.cpuArchMod.blocks;
 
 import eigencraft.cpuArchMod.dataObject.DataObject;
 import eigencraft.cpuArchMod.dataObject.DataObjectType;
-import eigencraft.cpuArchMod.simulation.SimulationIOManager;
-import eigencraft.cpuArchMod.simulation.SimulationMasterProvider;
-import eigencraft.cpuArchMod.simulation.SimulationNode;
-import eigencraft.cpuArchMod.simulation.SimulationWorld;
+import eigencraft.cpuArchMod.simulation.*;
 import eigencraft.cpuArchMod.items.DebugDataObjectItem;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -104,7 +101,7 @@ public class NodeContainerBlock extends Block {
                                 public void run(SimulationWorld simulationWorld) {
                                     SimulationNode node = simulationWorld.getOrLoadChunk(new ChunkPos(pos)).getNodeAt(pos);
                                     if (node==null) return;
-                                    node.processDirectInput(dataObject, simulationWorld.getIoManager());
+                                    node.processDirectInput(new PipeMessage(dataObject,PipeLane.DIRECT_INPUT), simulationWorld.getIoManager());
                                 }
                             });
                             mainHandStack.decrement(1);

@@ -2,6 +2,7 @@ package eigencraft.cpuArchMod.simulation.nodes;
 
 import eigencraft.cpuArchMod.CpuArchMod;
 import eigencraft.cpuArchMod.dataObject.DataObject;
+import eigencraft.cpuArchMod.simulation.PipeMessage;
 import eigencraft.cpuArchMod.simulation.SimulationIOManager;
 import eigencraft.cpuArchMod.simulation.SimulationNode;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
@@ -18,7 +19,7 @@ public class IONode extends SimulationNode {
     }
 
     @Override
-    public void process(DataObject inMessage, SimulationIOManager ioManager) {
+    public void process(PipeMessage inMessage, SimulationIOManager ioManager) {
         ioManager.addMainTickRunnable(new SimulationIOManager.MinecraftServerRunnable() {
             @Override
             public void run(MinecraftServer server) {
@@ -28,14 +29,14 @@ public class IONode extends SimulationNode {
                         return CpuArchMod.DEBUG_DATA_OBJECT_ITEM;
                     }
                 });
-                dataObjectItem.putSubTag("dataObject",inMessage.getCompoundTag());
+                dataObjectItem.putSubTag("dataObject",inMessage.getDataObject().getCompoundTag());
                 ItemScatterer.spawn(ioManager.getWorld(),position.getX(),position.getY()+1,position.getZ(),dataObjectItem);
             }
         });
     }
 
     @Override
-    public void processDirectInput(DataObject inMessage, SimulationIOManager ioManager) {
+    public void processDirectInput(PipeMessage inMessage, SimulationIOManager ioManager) {
         publish(inMessage);
     }
 }

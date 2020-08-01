@@ -14,8 +14,8 @@ public abstract class SimulationNode{
 
     HashSet<SimulationPipe> connectedPipes = new HashSet<>();
     public BlockPos position;
-    private final HashSet<DataObject> ownMessagesBuffer1 = new HashSet<>();
-    private final HashSet<DataObject> ownMessagesBuffer2 = new HashSet<>();
+    private final HashSet<PipeMessage> ownMessagesBuffer1 = new HashSet<>();
+    private final HashSet<PipeMessage> ownMessagesBuffer2 = new HashSet<>();
 
     public SimulationNode(BlockPos position){
         this.position = position;
@@ -29,9 +29,9 @@ public abstract class SimulationNode{
         return nodeTypeRegistry.getOrDefault(name, null);
     }
 
-    public abstract void process(DataObject inMessages,SimulationIOManager ioManager);
+    public abstract void process(PipeMessage message,SimulationIOManager ioManager);
 
-    public void processDirectInput(DataObject inMessage, SimulationIOManager ioManager){
+    public void processDirectInput(PipeMessage inMessage, SimulationIOManager ioManager){
         this.process(inMessage,ioManager);
     }
 
@@ -39,10 +39,10 @@ public abstract class SimulationNode{
         connectedPipes.add(pipe);
     }
 
-    public void publish(DataObject dataObject){
+    public void publish(PipeMessage message){
+        ownMessagesBuffer1.add(message);
         for (SimulationPipe pipe:connectedPipes){
-            ownMessagesBuffer1.add(dataObject);
-            pipe.publish(dataObject);
+            pipe.publish(message);
         }
     }
 
@@ -52,19 +52,16 @@ public abstract class SimulationNode{
         ownMessagesBuffer2.addAll(ownMessagesBuffer1);
         ownMessagesBuffer1.clear();
         //We need to collect the messages and sort out duplicates, for example if it is in an inner corner of a pipe(connected to two pipes, which are connect to each other)
-        HashSet<DataObject> allMessages = new HashSet<>();
+        HashSet<PipeMessage> allMessages = new HashSet<>();
         for (SimulationPipe pipe:connectedPipes){
             if (pipe instanceof SimulationMessageProvidingPipe){
-                for (Object dataObject : ((SimulationMessageProvidingPipe) pipe).getNewMessages()) {
-                    //If not own message
-                    if (!ownMessagesBuffer2.contains(dataObject)){
-                        allMessages.add((DataObject) dataObject);
-                    }
+                for (Object message : ((SimulationMessageProvidingPipe) pipe).getNewMessages()) {
+                    allMessages.add((PipeMessage) message);
                 }
             }
         }
-        for (DataObject dataObject:allMessages){
-            process(dataObject,ioManager);
+        for (PipeMessage message:allMessages){
+            process(message,ioManager);
         }
     }
 

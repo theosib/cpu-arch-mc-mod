@@ -4,6 +4,7 @@ import eigencraft.cpuArchMod.dataObject.DataObject;
 import eigencraft.cpuArchMod.dataObject.DataObjectConverter;
 import eigencraft.cpuArchMod.dataObject.DataObjectConverterRegistry;
 import eigencraft.cpuArchMod.dataObject.DataObjectTypes;
+import eigencraft.cpuArchMod.simulation.PipeMessage;
 import eigencraft.cpuArchMod.simulation.SimulationIOManager;
 import eigencraft.cpuArchMod.simulation.SimulationNode;
 import net.minecraft.util.math.BlockPos;
@@ -14,8 +15,8 @@ public class ByteConverterNode extends SimulationNode {
     }
 
     @Override
-    public void process(DataObject inMessages, SimulationIOManager ioManager) {
-        publish(DataObjectConverterRegistry.convert(inMessages, DataObjectTypes.BYTE_TYPE));
+    public void process(PipeMessage inMessages, SimulationIOManager ioManager) {
+        publish(new PipeMessage(DataObjectConverterRegistry.convert(inMessages.getDataObject(), DataObjectTypes.BYTE_TYPE),inMessages.getLane()));
     }
 
     public static class IntToByteConverter extends DataObjectConverter {

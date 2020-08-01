@@ -1,6 +1,7 @@
 package eigencraft.cpuArchMod.simulation.pipes;
 
 import eigencraft.cpuArchMod.dataObject.DataObject;
+import eigencraft.cpuArchMod.simulation.PipeMessage;
 import eigencraft.cpuArchMod.simulation.SimulationPipe;
 import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.LogManager;
@@ -39,28 +40,26 @@ public class TransferPipe implements SimulationPipe {
 
     /***
      * Sends a dataObject from this pipe to all connected pipes
-     * @param dataObject the dataObject which is sent
+     * @param pipeMessage the dataObject which is sent
      */
-    public void publish(DataObject dataObject){
+    public void publish(PipeMessage pipeMessage){
         loopBlocker = true;
         for(SimulationPipe pipe:connectedPipes){
-            pipe.interPipePublish(dataObject,this);
+            pipe.interPipePublish(pipeMessage);
         }
         loopBlocker = false;
     }
 
     /***
      * Used to transfer dataObjects between pipes, as an normal user, you never will use this.
-     * @param dataObject
-     * @param src stop backTracing
+     * @param message the message to transfer
      */
-    public void interPipePublish(DataObject dataObject, TransferPipe src) {
+    public void interPipePublish(PipeMessage message) {
         if (!loopBlocker){
             loopBlocker = true;
             for (SimulationPipe pipe : connectedPipes) {
-                if (pipe == src) continue;
                 try {
-                    pipe.interPipePublish(dataObject, this);
+                    pipe.interPipePublish(message);
                 } catch (StackOverflowError stackOverflow) {
                     //TODO what if a pipe causes a stackOverflow
                     LogManager.getLogger().info("Too long pipe!");

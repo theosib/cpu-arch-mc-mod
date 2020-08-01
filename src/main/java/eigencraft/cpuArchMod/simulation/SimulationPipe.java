@@ -10,8 +10,8 @@ import java.util.function.Function;
 public interface SimulationPipe {
     public void connect(SimulationPipe pipe);
     public void removeConnection(SimulationPipe pipe);
-    public void publish(DataObject dataObject);
-    void interPipePublish(DataObject dataObject, TransferPipe src);
+    public void publish(PipeMessage dataObject);
+    void interPipePublish(PipeMessage message);
     public void tick();
     public BlockPos getPos();
 

@@ -2,6 +2,7 @@ package eigencraft.cpuArchMod.simulation.nodes;
 
 import eigencraft.cpuArchMod.dataObject.DataObject;
 import eigencraft.cpuArchMod.dataObject.DataObjectTypes;
+import eigencraft.cpuArchMod.simulation.PipeMessage;
 import eigencraft.cpuArchMod.simulation.SimulationIOManager;
 import eigencraft.cpuArchMod.simulation.SimulationNode;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,7 +14,8 @@ public class IntArrayConverterNode extends SimulationNode {
     }
 
     @Override
-    public void process(DataObject inMessages, SimulationIOManager ioManager) {
+    public void process(PipeMessage in, SimulationIOManager ioManager) {
+        DataObject inMessages = in.getDataObject();
         DataObject dataObject = new DataObject(DataObjectTypes.INT_ARRAY_TYPE);
         if (inMessages.matchType(DataObjectTypes.INT_TYPE)){
             dataObject.setIntArray("data",new int[]{inMessages.getInt("data")});
@@ -22,7 +24,7 @@ public class IntArrayConverterNode extends SimulationNode {
         } else if (inMessages.matchType(DataObjectTypes.BOOLEAN_TYPE)){
             dataObject.setIntArray("data",new int[]{inMessages.getByte("bool")});
         } else if (inMessages.matchType(DataObjectTypes.INT_ARRAY_TYPE)){
-            publish(inMessages);
+            publish(new PipeMessage(inMessages,in.getLane()));
             return;
         } else if (inMessages.matchType(DataObjectTypes.BYTE_ARRAY_TYPE)){
             byte[] inData = inMessages.getByteArray("data");
@@ -32,7 +34,7 @@ public class IntArrayConverterNode extends SimulationNode {
             }
             dataObject.setIntArray("data",outData);
         }
-        publish(dataObject);
+        publish(new PipeMessage(dataObject,in.getLane()));
     }
 
     @Override

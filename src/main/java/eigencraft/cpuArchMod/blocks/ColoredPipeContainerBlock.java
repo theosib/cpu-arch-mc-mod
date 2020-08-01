@@ -2,8 +2,10 @@ package eigencraft.cpuArchMod.blocks;
 
 import eigencraft.cpuArchMod.items.BlockStateItem;
 import eigencraft.cpuArchMod.simulation.*;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
@@ -34,13 +36,14 @@ public class ColoredPipeContainerBlock extends PipeContainerBlock {
         //Registry is handled in the constructor
         ColoredPipeContainerBlock newNodeContainerBlock = new ColoredPipeContainerBlock(blockSettings, constructor, type);
 
-        //TODO only on client
-        ColorProviderRegistry.BLOCK.register(new BlockColorProvider() {
-            @Override
-            public int getColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIndex) {
-                return state.get(COLOR_PROPERTY).getMaterialColor().color;
-            }
-        }, newNodeContainerBlock);
+        if (FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT)){
+            ColorProviderRegistry.BLOCK.register(new BlockColorProvider() {
+                @Override
+                public int getColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIndex) {
+                    return state.get(COLOR_PROPERTY).getMaterialColor().color;
+                }
+            }, newNodeContainerBlock);
+        }
     }
 
     private ColoredPipeContainerBlock(Settings settings, Function<BlockPos, SimulationPipe> constructor, Class type) {
@@ -49,7 +52,6 @@ public class ColoredPipeContainerBlock extends PipeContainerBlock {
 
         for (BlockState state : this.getStateManager().getStates()) {
             String itemName = String.format("%s_%s", type.getSimpleName().toLowerCase(), state.get(COLOR_PROPERTY).asString());
-            System.out.println(itemName);
             Registry.register(Registry.ITEM, new Identifier(MODID, itemName), new BlockStateItem(state, new Item.Settings().group(CPU_ARCH_MOD_ITEM_GROUP)));
         }
 

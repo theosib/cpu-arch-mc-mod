@@ -5,5 +5,5 @@ import eigencraft.cpuArchMod.dataObject.DataObject;
 import java.util.Collection;
 
 public interface SimulationMessageProvidingPipe extends SimulationPipe{
-    public Collection<DataObject> getNewMessages();
+    public Collection<PipeMessage> getNewMessages();
 }
