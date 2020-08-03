@@ -13,10 +13,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Property;
 import net.minecraft.tag.BlockTags;
+import net.minecraft.util.BlockMirror;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
@@ -40,7 +43,7 @@ public class PipeContainerBlock extends HorizontalConnectingBlock implements Cpu
     }
 
     protected PipeContainerBlock(Settings settings, Function<SimulationPipeContext, SimulationPipe> constructor) {
-        super(1.0F, 1.0F, 16.0F, 16.0F, 16.0F,settings);
+        super(3.0F, 3.0F, 11.0F, 11.0F, 16.0F,settings);
         this.constructor = constructor;
     }
 
@@ -70,9 +73,7 @@ public class PipeContainerBlock extends HorizontalConnectingBlock implements Cpu
 
     public boolean canConnect(BlockState state, boolean neighborIsFullSquare, Direction dir) {
         Block block = state.getBlock();
-        boolean x = (!cannotConnect(block)) && (block instanceof CpuArchModBlock);
-        System.out.println(x);
-        return x;
+        return (!cannotConnect(block)) && (block instanceof CpuArchModBlock);
     }
 
     @Override
@@ -114,4 +115,6 @@ public class PipeContainerBlock extends HorizontalConnectingBlock implements Cpu
 
         return direction.getAxis().getType() == Direction.Type.HORIZONTAL ? (BlockState)state.with((Property)FACING_PROPERTIES.get(direction), this.canConnect(newState, newState.isSideSolidFullSquare(world, posFrom, direction.getOpposite()), direction.getOpposite())) : super.getStateForNeighborUpdate(state, direction, newState, world, pos, posFrom);
     }
+
+
 }
