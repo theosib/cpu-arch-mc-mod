@@ -1,11 +1,9 @@
 package eigencraft.cpuArchMod.simulation.nodes;
 
 import eigencraft.cpuArchMod.CpuArchMod;
-import eigencraft.cpuArchMod.dataObject.DataObject;
 import eigencraft.cpuArchMod.simulation.PipeMessage;
 import eigencraft.cpuArchMod.simulation.SimulationIOManager;
 import eigencraft.cpuArchMod.simulation.SimulationNode;
-import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;

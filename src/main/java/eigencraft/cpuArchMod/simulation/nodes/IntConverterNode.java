@@ -1,7 +1,6 @@
 package eigencraft.cpuArchMod.simulation.nodes;
 
 import eigencraft.cpuArchMod.dataObject.DataObject;
-
 import eigencraft.cpuArchMod.dataObject.DataObjectConverter;
 import eigencraft.cpuArchMod.dataObject.DataObjectConverterRegistry;
 import eigencraft.cpuArchMod.dataObject.DataObjectTypes;

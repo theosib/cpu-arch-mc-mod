@@ -1,6 +1,5 @@
 package eigencraft.cpuArchMod.simulation;
 
-import eigencraft.cpuArchMod.dataObject.DataObject;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 

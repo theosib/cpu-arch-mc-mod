@@ -2,7 +2,6 @@ package eigencraft.cpuArchMod.simulation.storage;
 
 import com.google.gson.*;
 import eigencraft.cpuArchMod.simulation.SimulationPipeContext;
-import net.minecraft.util.DyeColor;
 
 import java.lang.reflect.Type;
 

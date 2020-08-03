@@ -5,10 +5,10 @@ import eigencraft.cpuArchMod.dataObject.DataObjectTypes;
 import eigencraft.cpuArchMod.simulation.PipeMessage;
 import eigencraft.cpuArchMod.simulation.SimulationIOManager;
 import eigencraft.cpuArchMod.simulation.SimulationNode;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 
 public class ByteArrayConverterNode extends SimulationNode {
+    //TODO new converter system
     public ByteArrayConverterNode(BlockPos position) {
         super(position);
     }

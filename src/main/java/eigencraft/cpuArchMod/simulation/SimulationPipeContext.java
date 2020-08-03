@@ -1,6 +1,5 @@
 package eigencraft.cpuArchMod.simulation;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 

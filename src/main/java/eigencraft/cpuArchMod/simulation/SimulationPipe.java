@@ -1,7 +1,5 @@
 package eigencraft.cpuArchMod.simulation;
 
-import net.minecraft.util.math.BlockPos;
-
 import java.util.HashMap;
 import java.util.function.Function;
 

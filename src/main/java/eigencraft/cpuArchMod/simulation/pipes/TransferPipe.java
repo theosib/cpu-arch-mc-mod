@@ -1,18 +1,19 @@
 package eigencraft.cpuArchMod.simulation.pipes;
 
-import eigencraft.cpuArchMod.dataObject.DataObject;
 import eigencraft.cpuArchMod.simulation.PipeMessage;
 import eigencraft.cpuArchMod.simulation.SimulationPipe;
 import eigencraft.cpuArchMod.simulation.SimulationPipeContext;
-import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class TransferPipe implements SimulationPipe {
 
     SimulationPipeContext context;
-    private final List<SimulationPipe> connectedPipes = new ArrayList<>();
+    private final List<SimulationPipe> connectedPipes = new ArrayList<>(3);
     private boolean loopBlocker = false;
 
     /***
@@ -45,8 +46,13 @@ public class TransferPipe implements SimulationPipe {
      */
     public void publish(PipeMessage pipeMessage){
         loopBlocker = true;
-        for(SimulationPipe pipe:connectedPipes){
-            pipe.interPipePublish(pipeMessage);
+        try {
+            for (SimulationPipe pipe : connectedPipes) {
+                pipe.interPipePublish(pipeMessage);
+            }
+        } catch (StackOverflowError stackOverflow) {
+            //TODO what if a pipe causes a stackOverflow
+            LogManager.getLogger().info("Too long pipe!");
         }
         loopBlocker = false;
     }
@@ -59,12 +65,7 @@ public class TransferPipe implements SimulationPipe {
         if (!loopBlocker){
             loopBlocker = true;
             for (SimulationPipe pipe : connectedPipes) {
-                try {
-                    pipe.interPipePublish(message);
-                } catch (StackOverflowError stackOverflow) {
-                    //TODO what if a pipe causes a stackOverflow
-                    LogManager.getLogger().info("Too long pipe!");
-                }
+                pipe.interPipePublish(message);
             }
             loopBlocker = false;
         }

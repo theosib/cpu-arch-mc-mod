@@ -36,5 +36,6 @@ public abstract class ServerWorldMixin extends Object implements SimulationMaste
     public void constructor(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey<World> registryKey, RegistryKey<DimensionType> registryKey2, DimensionType dimensionType, WorldGenerationProgressListener generationProgressListener, ChunkGenerator chunkGenerator, boolean bl, long l, List<Spawner> list, boolean bl2, CallbackInfo ci){
         System.out.println(session.getDirectoryName());
         simulationMaster = new SimulationMaster(new File(session.method_27424(registryKey),"cpu_sim"));
+        simulationMaster.launchSimulationWorld((World)(Object)this);
     }
 }

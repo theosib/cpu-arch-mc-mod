@@ -1,6 +1,5 @@
 package eigencraft.cpuArchMod.simulation;
 
-import net.minecraft.block.MaterialColor;
 import net.minecraft.util.DyeColor;
 
 public enum PipeLane {

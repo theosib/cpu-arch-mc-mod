@@ -3,7 +3,9 @@ package eigencraft.cpuArchMod.dataObject;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.CompoundTag;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 /***
  * A DataObject
  * you need only to check if it ii of a given type, and it's ensured to have every required tag with at least a default value

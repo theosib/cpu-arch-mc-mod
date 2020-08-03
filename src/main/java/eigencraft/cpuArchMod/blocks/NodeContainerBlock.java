@@ -2,8 +2,8 @@ package eigencraft.cpuArchMod.blocks;
 
 import eigencraft.cpuArchMod.dataObject.DataObject;
 import eigencraft.cpuArchMod.dataObject.DataObjectType;
-import eigencraft.cpuArchMod.simulation.*;
 import eigencraft.cpuArchMod.items.DebugDataObjectItem;
+import eigencraft.cpuArchMod.simulation.*;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -29,7 +29,7 @@ import java.util.function.Function;
 import static eigencraft.cpuArchMod.CpuArchMod.CPU_ARCH_MOD_ITEM_GROUP;
 import static eigencraft.cpuArchMod.CpuArchMod.MODID;
 
-public class NodeContainerBlock extends Block {
+public class NodeContainerBlock extends Block implements CpuArchModBlock  {
     private static final Settings blockSettings = FabricBlockSettings.of(Material.METAL).breakByHand(true).hardness((float)Math.PI).build();
 
     //To create a new instance

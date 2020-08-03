@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 
 public class IntArrayConverterNode extends SimulationNode {
+    //TODO new converter system
     public IntArrayConverterNode(BlockPos position) {
         super(position);
     }

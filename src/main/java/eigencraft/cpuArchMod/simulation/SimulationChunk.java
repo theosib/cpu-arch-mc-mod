@@ -3,7 +3,8 @@ package eigencraft.cpuArchMod.simulation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
 
 public class SimulationChunk {
     public ChunkPos getChunkPos() {

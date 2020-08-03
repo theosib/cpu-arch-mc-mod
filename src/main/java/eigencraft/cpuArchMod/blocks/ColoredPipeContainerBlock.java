@@ -6,6 +6,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
@@ -29,7 +30,8 @@ import java.util.function.Function;
 import static eigencraft.cpuArchMod.CpuArchMod.CPU_ARCH_MOD_ITEM_GROUP;
 import static eigencraft.cpuArchMod.CpuArchMod.MODID;
 
-public class ColoredPipeContainerBlock extends PipeContainerBlock {
+public class ColoredPipeContainerBlock extends Block implements CpuArchModBlock {
+    protected static final AbstractBlock.Settings blockSettings = FabricBlockSettings.of(Material.METAL).breakByHand(true).hardness((float)Math.PI).build();
     public static final EnumProperty<DyeColor> COLOR_PROPERTY = EnumProperty.of("color", DyeColor.class);
 
     public static void create(Class type, Function<SimulationPipeContext, SimulationPipe> constructor) {
@@ -47,8 +49,11 @@ public class ColoredPipeContainerBlock extends PipeContainerBlock {
         }
     }
 
-    private ColoredPipeContainerBlock(Settings settings, Function<SimulationPipeContext, SimulationPipe> constructor, Class type) {
-        super(settings, constructor);
+    protected Function<SimulationPipeContext,SimulationPipe> constructor;
+
+    private ColoredPipeContainerBlock(AbstractBlock.Settings settings, Function<SimulationPipeContext, SimulationPipe> constructor, Class type) {
+        super(settings);
+        this.constructor = constructor;
         Registry.register(Registry.BLOCK, new Identifier(MODID, type.getSimpleName().toLowerCase()), this);
 
         for (BlockState state : this.getStateManager().getStates()) {
@@ -76,8 +81,39 @@ public class ColoredPipeContainerBlock extends PipeContainerBlock {
         builder.add(COLOR_PROPERTY);
     }
 
-    @Override
+
     protected SimulationPipeContext buildContext(BlockState state, BlockPos pos) {
         return new SimulationPipeContext().setColor(state.get(COLOR_PROPERTY)).setPosition(pos);
+    }
+
+    @Override
+    public void onBroken(WorldAccess world, BlockPos pos, BlockState state) {
+        //Simulation is only server side
+        if (!world.isClient()){
+            //Run it in the simulation thread
+            ((SimulationMasterProvider)world).getSimulationMaster().getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
+                @Override
+                public void run(SimulationWorld simulationWorld) {
+                    //In the simulation thread, remove the pipe
+                    simulationWorld.removePipe(pos);
+                }
+            });
+        }
+        super.onBroken(world,pos,state);
+    }
+
+    @Override
+    public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
+        //Simulation is only server side
+        if (!world.isClient){
+            //Run it in the simulation thread
+            ((SimulationMasterProvider)world).getSimulationMaster().getIOManager().addSimulationTickRunnable(new SimulationIOManager.SimulationTickRunnable() {
+                @Override
+                public void run(SimulationWorld simulationWorld) {
+                    //In the simulation thread, add the pipe
+                    simulationWorld.addPipe(constructor.apply(buildContext(state,pos)),pos);
+                }
+            });
+        }
     }
 }

@@ -1,9 +1,7 @@
 package eigencraft.cpuArchMod.simulation.pipes;
 
-import eigencraft.cpuArchMod.dataObject.DataObject;
 import eigencraft.cpuArchMod.simulation.*;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
 
 import java.util.Collection;
 import java.util.HashSet;
