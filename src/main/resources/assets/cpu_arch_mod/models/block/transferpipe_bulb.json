@@ -1,0 +1,19 @@
+{
+    "textures": {
+        "texture":  "cpu_arch_mod:block/transferpipe",
+        "particle": "#texture"
+    },
+    "elements": [
+        {   "from": [ 4, 4, 4 ],
+            "to": [ 12, 12, 12 ],
+            "faces": {
+                "down":  { "texture": "#texture", "cullface": "down", "rotation": 90 },
+                "up":    { "texture": "#texture", "cullface": "up"   },
+                "north": { "texture": "#texture" },
+                "south": { "texture": "#texture" },
+                "west":  { "texture": "#texture" },
+                "east":  { "texture": "#texture" }
+            }
+        }
+    ]
+}

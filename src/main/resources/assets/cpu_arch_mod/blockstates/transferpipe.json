@@ -1,17 +1,17 @@
 {
-  "multipart": [
-    {   "apply": { "model": "cpu_arch_mod:block/transferpipe_post" }},
-    {   "when": { "north": "true" },
-      "apply": { "model": "cpu_arch_mod:block/transferpipe_side" }
-    },
-    {   "when": { "east": "true" },
-      "apply": { "model": "cpu_arch_mod:block/transferpipe_side", "y": 90 }
-    },
-    {   "when": { "south": "true" },
-      "apply": { "model": "cpu_arch_mod:block/transferpipe_side", "y": 180 }
-    },
-    {   "when": { "west": "true" },
-      "apply": { "model": "cpu_arch_mod:block/transferpipe_side", "y": 270 }
-    }
-  ]
+    "multipart": [
+        {   "apply": { "model": "cpu_arch_mod:block/transferpipe_bulb" }},
+        {   "when": { "north": "true" },
+            "apply": { "model": "cpu_arch_mod:block/transferpipe_side" }
+        },
+        {   "when": { "east": "true" },
+            "apply": { "model": "cpu_arch_mod:block/transferpipe_side", "y": 90 }
+        },
+        {   "when": { "south": "true" },
+            "apply": { "model": "cpu_arch_mod:block/transferpipe_side", "y": 180 }
+        },
+        {   "when": { "west": "true" },
+            "apply": { "model": "cpu_arch_mod:block/transferpipe_side", "y": 270 }
+        }
+    ]
 }
